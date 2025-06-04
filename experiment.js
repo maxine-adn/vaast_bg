@@ -45,7 +45,8 @@
       var timeline_exclusion = [];
 
       timeline_exclusion.push(exclusion);
-      jsPsych.init({timeline: timeline_safari});
+      var jsPsych = initJsPsych(); // no parameter
+      jsPsych.run(timeline_exclusion);
 
   }
   // firebase initialization ---------------------------------------------------------------
@@ -931,7 +932,8 @@ var avoidance_key = "B";
       "<p class='instructions'>If you are not redirected, please click <a href='https://app.prolific.ac/submissions/complete?cc=MEMHX5XQ'>here</a>.<p>",
     choices: jsPsych.NO_KEYS
   };
-  // procedure ----------------------------------------------------------------------------
+
+  // Procedure ----------------------------------------------------------------------------
   // Initialize timeline ------------------------------------------------------------------
   var timeline = [];
 
@@ -991,7 +993,6 @@ var avoidance_key = "B";
                 ending_2);
 
   // Launch experiment --------------------------------------------------------------------
-  // preloading ---------------------------------------------------------------------------
   // Preloading. For some reason, it appears auto-preloading fails, so using it manually.
   // In principle, it should have ended when participants starts VAAST procedure (which)
   // contains most of the image that have to be pre-loaded.
@@ -1003,17 +1004,18 @@ var avoidance_key = "B";
   jsPsych.pluginAPI.preloadImages(loading_gif);
   jsPsych.pluginAPI.preloadImages(vaast_instructions_images);
   jsPsych.pluginAPI.preloadImages(vaast_bg_filename);
-  // timeline initiaization ---------------------------------------------------------------
+  
+  // Timeline initialization ---------------------------------------------------------------
 
   if(is_compatible) {
-    jsPsych.init({
-        timeline: timeline,
-        on_interaction_data_update: function() {
-          saving_browser_events(completion = false);
-        },
+    var jsPsych = ({
+      on_interaction_data_update: function() {
+        saving_browser_events(completion = false);
+      },
       on_finish: function() {
-          saving_browser_events(completion = true);
-          window.location.href = "https://app.prolific.com/submissions/complete?cc=C3FXL022";
+        saving_browser_events(completion = true);
+        window.location.href = "https://app.prolific.com/submissions/complete?cc=C3FXL022";
       }
     });
+    jsPsych.run(timeline);
   }
