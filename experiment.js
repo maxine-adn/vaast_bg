@@ -32,9 +32,8 @@
 
   if(!is_compatible) {
 
-
       var exclusion = {
-          type: "html-keyboard-response",
+          type: jsPsychHtmlKeyboardResponse,
           stimulus:
           "<p>Unfortunately, this study is not compatible with your " +
           "browser.</p>" +
@@ -109,12 +108,12 @@ var avoidance_key = "B";
   }
 
   var hiding_cursor = {
-      type: 'call-function',
+      type: jsPsychCallFunction,
       func: hide_cursor
   }
 
   var showing_cursor = {
-      type: 'call-function',
+      type: jsPsychCallFunction,
       func: show_cursor
   }
 
@@ -435,22 +434,22 @@ var avoidance_key = "B";
 
   // saving blocks ------------------------------------------------------------------------
   var save_id = {
-      type: 'call-function',
+      type: jsPsychCallFunction,
       func: saving_id
   }
 
   var save_vaast_trial = {
-      type: 'call-function',
+      type: jsPsychCallFunction,
       func: saving_vaast_trial
   }
 
   var save_attention = {
-    type: 'call-function',
+    type: jsPsychCallFunction,
     func: saving_attention
   }
 
   var save_extra = {
-      type: 'call-function',
+      type: jsPsychCallFunction,
       func: saving_extra
   }
 
@@ -468,7 +467,7 @@ var avoidance_key = "B";
 
   // initial instructions -----------------------------------------------------------------
   var welcome = {
-    type: "html-keyboard-response",
+    type: jsPsychHtmlKeyboardResponse,
     stimulus:
       "<h1 class ='custom-title'> Welcome </h1>" +
       "<p class='instructions'>Thank you for taking part in this study.<p>" +
@@ -487,7 +486,7 @@ var avoidance_key = "B";
   };
 
   var consent = {
-    type: "html-button-response",
+    type: jsPsychHtmlButtonResponse,
     stimulus:
     "<h1 class ='custom-title'> Informed consent </h1>" +
       "<p class='instructions'>By clicking below to start the study, you recognize that:</p>" +
@@ -505,7 +504,7 @@ var avoidance_key = "B";
   }
 
   var welcome_2 = {
-    type: "html-button-response",
+    type: jsPsychHtmlButtonResponse,
     stimulus:
       "<p class='instructions'>Before going further, please note that this study should take " +
       "15-17 minutes to complete.</p>",
@@ -513,13 +512,13 @@ var avoidance_key = "B";
   };
 
   var not_enough_time_to_complete = {
-      type: 'html-button-response',
+      type: jsPsychHtmlButtonResponse,
       stimulus: '<p>Please come back later to take part in this experiment.</p>',
       choices: ['Go back to Prolific Academic'],
   };
 
   var redirect_to_prolific = {
-      type: 'call-function',
+      type: jsPsychCallFunction,
       func: function() {
           window.location.href = "https://www.prolific.ac/";
           jsPsych.pauseExperiment();
@@ -542,7 +541,7 @@ var avoidance_key = "B";
 
   // Switching to fullscreen --------------------------------------------------------------
   var fullscreen_trial = {
-    type: 'fullscreen',
+    type: jsPsychFullscreen,
     message:  '<p>To take part in this study, your browser needs to be set to fullscreen.</p>',
     button_label: 'Switch to fullscreen',
     fullscreen_mode: true
@@ -551,7 +550,7 @@ var avoidance_key = "B";
   // Initial instructions -----------------------------------------------------------------
   // First slide --------------------------------------------------------------------------
   var instructions = {
-    type: "html-keyboard-response",
+    type: jsPsychHtmlKeyboardResponse,
     stimulus: "<p class='instructions'>You are now about to start the study. "+
     "<br><br>"+
     "In this study, you will engage in a categorization task divided into two sections. " +
@@ -567,7 +566,7 @@ var avoidance_key = "B";
   // VAAST instructions -------------------------------------------------------------------
 
   var vaast_instructions_1 = {
-    type: "html-keyboard-response",
+    type: jsPsychHtmlKeyboardResponse,
     stimulus:
       "<h1 class ='custom-title'>Video Game Task</h1>" +
       "<p class='instructions'>In this task, like in a video game, you will see an environment " +
@@ -580,7 +579,7 @@ var avoidance_key = "B";
   };
 
   var attention_check = {
-  type: 'survey-text',
+  type: jsPsychSurveyText,
   data: {trial: "attention_check"},
   preamble: "<p class ='instructions'>When asked for your favorite color, please enter the word baguette in the box below.</p>",
   questions: [{
@@ -590,7 +589,7 @@ var avoidance_key = "B";
 };
 
   var vaast_instructions_2 = {
-    type: "html-keyboard-response",
+    type: jsPsychHtmlKeyboardResponse,
     stimulus:
       "<h1 class ='custom-title'>Video Game Task</h1>" +
       "<p class='instructions'>Words will appear in this environment and your task " +
@@ -605,7 +604,7 @@ var avoidance_key = "B";
   };
 
   var vaast_instructions_3 = {
-    type: "html-keyboard-response",
+    type: jsPsychHtmlKeyboardResponse,
     stimulus:
       "<h1 class ='custom-title'>Video Game Task</h1>" +
       "<p class='instructions'>At the beginning of each trial, you will see the 'O' symbol. This symbol " +
@@ -620,7 +619,7 @@ var avoidance_key = "B";
   };
 
   var vaast_instructions_training_block_1 = {
-      type : "html-keyboard-response",
+      type: jsPsychHtmlKeyboardResponse,
       stimulus:
         "<h1 class ='custom-title'>Video Game Task: Section 1</h1>" +
         "<p class='instructions'><center><strong>INSTRUCTION FOR THIS FIRST SECTION</strong></center></p>" +
@@ -637,7 +636,7 @@ var avoidance_key = "B";
   };
 
   var vaast_instructions_test_block_1 = {
-      type: "html-keyboard-response",
+      type: jsPsychHtmlKeyboardResponse,
       stimulus:
         "<h1 class ='custom-title'>Video Game Task: Section 1</h1>" +
         "<p class='instructions'>The training phase is now over.</p>" +
@@ -652,7 +651,7 @@ var avoidance_key = "B";
   };
 
   var vaast_instructions_training_block_2 = {
-    type : "html-keyboard-response",
+    type: jsPsychHtmlKeyboardResponse,
     stimulus:
       "<h1 class ='custom-title'>Video Game Task: Section 2</h1>" +
       "<p class='instructions'><center><strong>INSTRUCTION FOR THIS SECOND SECTION</strong></center></p>" +
@@ -669,7 +668,7 @@ var avoidance_key = "B";
   };
 
   var vaast_instructions_test_block_2 = {
-      type: "html-keyboard-response",
+      type: jsPsychHtmlKeyboardResponse,
       stimulus:
         "<h1 class ='custom-title'>Video Game Task: Section 2</h1>" +
         "<p class='instructions'>The training phase is now over.</p>" +
@@ -684,7 +683,7 @@ var avoidance_key = "B";
   };
 
   var vaast_instructions_4 = {
-    type: "html-keyboard-response",
+    type: jsPsychHtmlKeyboardResponse,
     stimulus:
       "<p class='instructions'><center>Before you start:</center></p>" +
       "<p class='instructions'>Remember that it is EXTREMELY IMPORTANT that you try to " +
@@ -695,7 +694,7 @@ var avoidance_key = "B";
   }
 
   var vaast_instructions_5 = {
-    type: "html-keyboard-response",
+    type: jsPsychHtmlKeyboardResponse,
     stimulus:
       "<p class='instructions'><center><strong>End of this section</strong></center></p>" +
       "<br>" +
@@ -707,7 +706,7 @@ var avoidance_key = "B";
   // Creating a trial ---------------------------------------------------------------------
 
   var vaast_start = {
-    type: 'vaast-text',
+    type: jsPsychVaastText,
     stimulus: "o",
     position: 1,
     background_images: background,
@@ -721,7 +720,7 @@ var avoidance_key = "B";
   }
 
   var vaast_fixation = {
-    type: 'vaast-fixation',
+    type: jsPsychVaastFixation,
     fixation: "+",
     font_size: 46,
     position: 1,
@@ -729,7 +728,7 @@ var avoidance_key = "B";
   }
 
   var vaast_first_step_train_1 = {
-    type: 'vaast-text',
+    type: jsPsychVaastText,
     stimulus: jsPsych.timelineVariable('stimulus'),
     position: 1,
     background_images: background,
@@ -745,7 +744,7 @@ var avoidance_key = "B";
   }
 
   var vaast_first_step_1 = {
-    type: 'vaast-text',
+    type: jsPsychVaastText,
     stimulus: jsPsych.timelineVariable('stimulus'),
     position: 1,
     background_images: background,
@@ -760,7 +759,7 @@ var avoidance_key = "B";
   }
 
   var vaast_second_step_1 = {
-    type: 'vaast-text',
+    type: jsPsychVaastText,
     position: next_position,
     stimulus: jsPsych.timelineVariable('stimulus'),
     background_images: background,
@@ -836,14 +835,14 @@ var avoidance_key = "B";
   // end fullscreen -----------------------------------------------------------------------
 
   var fullscreen_trial_exit = {
-    type: 'fullscreen',
+    type: jsPsychFullscreen,
     fullscreen_mode: false
   }
 
   // demographics + questions -------------------------------------------------------------
 
   var extra_information = {
-    type: 'html-keyboard-response',
+    type: jsPsychHtmlKeyboardResponse,
     stimulus:
       "<p class='instructions'>The study is almost finished. Now, you have to answer a few questions.</p>" +
       "<p class='continue-instructions'>Press <strong>space</strong> to continue.</p>",
@@ -852,7 +851,7 @@ var avoidance_key = "B";
 
   var extra_information_2 = {
     timeline: [{
-      type: 'survey-text',
+      type: jsPsychSurveyText,
       questions: [{prompt: "What is your age?"}],
       button_label: "Submit",
     }],
@@ -872,13 +871,13 @@ var avoidance_key = "B";
   }
 
   var extra_information_3 = {
-    type: 'survey-multi-choice',
+    type: jsPsychSurveyMultiChoice,
     questions: [{prompt: "What is your sex?", options: ["&nbspMale", "&nbspFemale", "&nbspOther"], required: true, horizontal: true}],
     button_label: "Submit"
   }
 
   var extra_information_4 = {
-    type: 'survey-multi-choice',
+    type: jsPsychSurveyMultiChoice,
     questions: [{prompt: "How well do you speak english?",
                  options: ["&nbspFluently", "&nbspVery good", "&nbspGood", "&nbspAverage", "&nbspBad", "&nbspVery bad"],
                  required: true, horizontal: false}],
@@ -886,7 +885,7 @@ var avoidance_key = "B";
   }
 
   var extra_information_5 = {
-    type: 'survey-multi-choice',
+    type: jsPsychSurveyMultiChoice,
     questions: [{prompt: "What is your socioeconomic status?",
                  options: ["&nbspVery low", "&nbspLow", "&nbspMedium", "&nbspHigh", "&nbspVery high"],
                  required: true, horizontal: false}],
@@ -894,7 +893,7 @@ var avoidance_key = "B";
   }
 
   var extra_information_6 = {
-    type: 'survey-multi-choice',
+    type: jsPsychSurveyMultiChoice,
     questions: [{prompt: "What is your highest level of education?",
                  options: ["&nbspDid not complete high school", "&nbspHigh school/GED", "&nbspSome college", "&nbspBachelor's degree", "&nbspMaster's degree", "&nbspAdvanced graduate work or Ph.D."],
                  required: true, horizontal: false}],
@@ -902,7 +901,7 @@ var avoidance_key = "B";
   }
 
   var extra_information_7 = {
-    type: 'survey-text',
+    type: jsPsychSurveyText,
     questions: [{prompt: "Do you have any remarks about this study? [Optional]"}],
     button_label: "Submit"
   }
@@ -910,7 +909,7 @@ var avoidance_key = "B";
   // end insctruction ---------------------------------------------------------------------
 
   var ending = {
-    type: "html-keyboard-response",
+    type: jsPsychHtmlKeyboardResponse,
     stimulus:
       "<p class='instructions'>You are now finished with this study.<p>" +
       "<p class='instructions'>In this study, we were interested in the measure of " +
@@ -924,7 +923,7 @@ var avoidance_key = "B";
   };
 
   var ending_2 = {
-    type: "html-keyboard-response",
+    type: jsPsychHtmlKeyboardResponse,
     trial_duration: 2000,
     stimulus:
       "<p class='instructions'>You will now be redirected to Prolific Academic's website " +
