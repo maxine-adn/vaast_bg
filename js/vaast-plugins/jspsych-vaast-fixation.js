@@ -2,7 +2,7 @@ var jsPsychVaastFixation = (function(jspsych) {
   "use strict";  
   
   const info = {
-    name: "vaastFixation",
+    name: "vaast-fixation",
     version: "1.0.0",
     parameters: {
       /** The string to be displayed as fixation. */
