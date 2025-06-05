@@ -37,7 +37,7 @@
         type: jsPsych.plugins.parameterType.KEYCODE,
         pretty_name: 'Key to move forward',
         array: true,
-        default: jsPsych.ALL_KEYS,
+        default: "ALL_KEYS",
         description: 'The keys that allow the user to advance to the next trial if their key press was incorrect.'
       },
       display_feedback: {
@@ -246,7 +246,7 @@
     };
 
     // start the response listener
-    if (trial.approach_key != jsPsych.NO_KEYS && trial.avoidance_key != jsPsych.NO_KEYS) {
+    if (trial.approach_key != "NO_KEYS" && trial.avoidance_key != "NO_KEYS") {
       var keyboardListener = jsPsych.pluginAPI.getKeyboardResponse({
         callback_function: after_response,
         valid_responses: [trial.approach_key, trial.avoidance_key],
