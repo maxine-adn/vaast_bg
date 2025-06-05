@@ -33,13 +33,13 @@
   if(!is_compatible) {
 
       var exclusion = {
-          type: jsPsychHtmlKeyboardResponse,
-          stimulus:
-          "<p>Unfortunately, this study is not compatible with your " +
-          "browser.</p>" +
-          "<p>Please reopen this experiment from a supported browser (like " +
-          "Chrome or Firefox).</p>",
-          choices: jsPsych.NO_KEYS
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus:
+        "<p>Unfortunately, this study is not compatible with your " +
+        "browser.</p>" +
+        "<p>Please reopen this experiment from a supported browser (like " +
+        "Chrome or Firefox).</p>",
+        choices: jsPsych.NO_KEYS
       };
 
       var timeline_exclusion = [];
@@ -48,7 +48,19 @@
       var jsPsych = initJsPsych(); // no parameter
       jsPsych.run(timeline_exclusion);
 
+  } else {
+
+    var jsPsych = initJsPsych({
+      on_interaction_data_update: function() {
+        saving_browser_events(completion = false);
+      },
+      on_finish: function() {
+        saving_browser_events(completion = true);
+        window.location.href = "https://app.prolific.com/submissions/complete?cc=C3FXL022";
+      }
+    });
   }
+
   // firebase initialization ---------------------------------------------------------------
   var firebase_config = {
     apiKey: "AIzaSyAPTEPrT8V9T1-GouWXnW6jknK3brmagJs",
@@ -57,8 +69,8 @@
 
   firebase.initializeApp(firebase_config);
   var database = firebase.database();
-  var session_id  = jsPsych.randomization.randomID();
-
+  var session_id = this.jsPsych.randomization.randomID();
+  
   // connection status ---------------------------------------------------------------------
   // This section ensure that we don't lose data. Anytime the 
   // client is disconnected, an alert appears onscreen
@@ -705,7 +717,7 @@ var avoidance_key = "B";
 
 
   // Creating a trial ---------------------------------------------------------------------
-
+  
   var vaast_start = {
     type: jsPsychVaastText,
     stimulus: "o",
@@ -719,7 +731,7 @@ var avoidance_key = "B";
     display_feedback: true,
     response_ends_trial: true
   }
-
+  
   var vaast_fixation = {
     type: jsPsychVaastFixation,
     fixation: "+",
@@ -727,7 +739,7 @@ var avoidance_key = "B";
     position: 1,
     background_images: background
   }
-
+  
   var vaast_first_step_train_1 = {
     type: jsPsychVaastText,
     stimulus: jsPsych.timelineVariable('stimulus'),
@@ -1008,14 +1020,5 @@ var avoidance_key = "B";
   // Timeline initialization ---------------------------------------------------------------
 
   if(is_compatible) {
-    var jsPsych = ({
-      on_interaction_data_update: function() {
-        saving_browser_events(completion = false);
-      },
-      on_finish: function() {
-        saving_browser_events(completion = true);
-        window.location.href = "https://app.prolific.com/submissions/complete?cc=C3FXL022";
-      }
-    });
     jsPsych.run(timeline);
   }
