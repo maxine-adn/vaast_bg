@@ -94,27 +94,27 @@ var jsPsychVaastImage = (function(jspsych) {
     data: {
       /** The path to the image file that the participant saw on this trial. */
       stimulus: {
-        type: ParameterType.STRING,
+        type: jspsych.ParameterType.STRING,
       },
       /** Indicates which key the participant pressed. */
       response: {
-        type: ParameterType.STRING,
+        type: jspsych.ParameterType.STRING,
       },
       /** Boolean indicating whether the user's key press was correct or incorrect for the given stimulus. */
       correct: {
-        type: ParameterType.BOOL,
+        type: jspsych.ParameterType.BOOL,
       },
       /** The response time in milliseconds for the participant to make a response. The time is measured from when the stimulus first appears on the screen until the participant's response.  */
       rt: {
-        type: ParameterType.INT,
+        type: jspsych.ParameterType.INT,
       },
       /** The movement associated with the stimulus. */
       movement: {
-        type: ParameterType.STRING,
+        type: jspsych.ParameterType.STRING,
       },
       /** The position in the "background_images" array used to set the background. */
       position: {
-        type: ParameterType.INT,
+        type: jspsych.ParameterType.INT,
       },
     },
   }
@@ -134,8 +134,7 @@ var jsPsychVaastImage = (function(jspsych) {
       this.jsPsych = jsPsych;
     }
     trial(display_element, trial) {
-
-      var html_str = "";
+      let html_str = "";
 
       html_str += "<div style='position: absolute; right: 0; top: 0; width: 100%; height: 100%; background: url(" + trial.background_images[trial.position] + ") center no-repeat'></div>";
       html_str += "<div style='position: absolute; right: 50%; top: 50; width: " + trial.font_sizes[trial.position] + "px; height: " + trial.font_sizes[trial.position] + "px; margin-top: -" + 
@@ -145,13 +144,13 @@ var jsPsychVaastImage = (function(jspsych) {
       html_str += "<div id='wrongImgID' style='position: relative; top: 300px; margin-left: auto; margin-right: auto; left: 0; right: 0'>";
 
       if(trial.display_feedback === true) {
-        html_str += "<div id='wrongImgContainer' style='visibility: hidden; position: absolute; top: -75px; margin-left: auto; margin-right: auto; left: 0; right: 0'><p>" + trial.html_when_wrong + "</p></div>";
+        html_str += "<div id='wrongImgContainer' style='visibility: hidden; position: absolute; top: -75px; margin-left: auto; margin-right: auto; left: 0; right: 0'><p>" + trial.html_when_wrong +
+         "</p></div>";
       }
 
       html_str += "</div>";
 
       display_element.innerHTML = html_str;
-
 
       // store response
       var response = {
@@ -172,7 +171,7 @@ var jsPsychVaastImage = (function(jspsych) {
         }
 
         // gather the data to store for the trial
-        var trial_data = {
+        let trial_data = {
           "rt": response.rt,
           "stimulus": trial.stimulus,
           "key_press": response.key,
@@ -188,8 +187,8 @@ var jsPsychVaastImage = (function(jspsych) {
         this.jsPsych.finishTrial(trial_data);
       };
 
-      var AppKeyCode = jsPsych.pluginAPI.convertKeyCharacterToKeyCode(trial.approach_key);
-      var AvoKeyCode = jsPsych.pluginAPI.convertKeyCharacterToKeyCode(trial.avoidance_key);
+      const AppKeyCode = this.jsPsych.pluginAPI.convertKeyCharacterToKeyCode(trial.approach_key);
+      const AvoKeyCode = this.jsPsych.pluginAPI.convertKeyCharacterToKeyCode(trial.avoidance_key);
 
       // function to handle responses by the subject
       var after_response = function(info) {

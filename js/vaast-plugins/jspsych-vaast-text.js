@@ -1,269 +1,299 @@
-/**************************************************************
-* VAAST implementation in jsPsych. 
-* (text trial)
-*
-*
-*                   (cedric.batailler@univ-grenoble-alpes.fr)
-***************************************************************/
+var jsPsychVaastText = (function(jspsych) {
+  "use strict";
 
- jsPsych.plugins['vaast-text'] = (function() {
-
-  var plugin = {};
-
-  jsPsych.pluginAPI.registerPreload('vaast-image', 'stimulus', 'image');
-
-  plugin.info = {
-    name: 'vaast-itext',
-    description: '',
+  const info = {
+    name: "vaast-texte",
+    version: "1.0.0",
     parameters: {
+      /** The text that is displayed. */
       stimulus: {
-        type: jsPsych.plugins.parameterType.STRING,
+        type: jspsych.ParameterType.STRING,
         pretty_name: 'Stimulus',
-        description: 'The string to be displayed as fication'
+        default: undefined,
       },
+      /** The key press that is associated with an approach movement. */
       approach_key: {
-        type: jsPsych.plugins.parameterType.HTML_STRING, 
+        type: jspsych.ParameterType.KEY,
         pretty_name: 'Approach key',
         default: 'Z',
-        description: 'Key press that is associated with an approach movement.'
       },
+      /** The key press that is associated with an avoidance movement. */
       avoidance_key: {
-        type: jsPsych.plugins.parameterType.STRING,
+        type: jspsych.ParameterType.KEY,
         pretty_name: 'Avoidance key',
         default: 'S',
-        description: 'Key press that is associated with an avoidance movement.'
       },
+      /** The keys that allow the user to advance to the next trial if their key press was incorrect. */
       key_to_move_forward: {
-        type: jsPsych.plugins.parameterType.KEYCODE,
+        type: jspsych.ParameterType.KEYS,
         pretty_name: 'Key to move forward',
-        array: true,
         default: "ALL_KEYS",
-        description: 'The keys that allow the user to advance to the next trial if their key press was incorrect.'
       },
+      /** If true, then the code included in 'html_when_wrong' will be displayed when the user makes an incorrect key press. */
       display_feedback: {
-        type: jsPsych.plugins.parameterType.BOOL,
+        type: jspsych.ParameterType.BOOL,
         pretty_name: 'Display feedback',
         default: false,
-        description: 'If true, then html when wrong will be displayed when user makes an incorrect key press.'
       },
+      /** How long the feedback is shown (in ms). */
       feedback_duration: {
-        type: jsPsych.plugins.parameterType.INT,
-        pretty_name: 'Display feedback',
+        type: jspsych.ParameterType.INTEGER,
+        pretty_name: 'Feedback duration',
         default: null,
-        description: 'If true, then html when wrong will be displayed when user makes an incorrect key press.'
       },
+      /** The html code that is displayed when a user presses the wrong key. */
       html_when_wrong: {
-        type: jsPsych.plugins.parameterType.HTML_STRING,
+        type: jspsych.ParameterType.HTML_STRING,
         pretty_name: 'HTML when wrong',
         default: '<span style="color: red; font-size: 80px">X</span>',
-        description: 'The html code to display when a user presses the wrong key.'
       }, 
+      /** If true, the user will be forced to press the correct key in order to advance to the next trial after a wrong key press. */
       force_correct_key_press: {
-        type: jsPsych.plugins.parameterType.BOOL,
+        type: jspsych.ParameterType.BOOL,
         pretty_name: 'Force correct key press',
         default: false,
-        description: 'If true, in order to advance to the next trial after a wrong key press the user will be forced to press the correct key.'
       },
+      /** The stimulus will be associated with either "approach" or "avoidance". */
       stim_movement: {
-        type: jsPsych.plugins.parameterType.HTML_STRING,
-        pretty_name: 'Stimulus key association',
+        type: jspsych.ParameterType.STRING,
+        pretty_name: 'Stimulus movement association',
         options: ['approach', 'avoidance'],
-        default: 'undefined',
-        description: 'Stimulus will be associated with either "approach" or "avoidance".'
+        default: undefined,
       },
+      /** An array with the sizes of the image as function of the position. */
       font_sizes: {
-        type: jsPsych.plugins.parameterType.ARRAY,
+        type: jspsych.ParameterType.ARRAY,
         pretty_name: 'Stimulus size',
         default: null,
-        description: 'An array with sizes of the image as function of the position.'
       },
+      /** If true, the trial will end when the user makes a response. */
       response_ends_trial: {
-        type: jsPsych.plugins.parameterType.BOOL,
+        type: jspsych.ParameterType.BOOL,
         pretty_name: 'Response ends trial',
         default: true,
-        description: 'If true, trial will end when user makes a response.'
       },
+      /** How long the trial is shown. */
       trial_duration: {
-        type: jsPsych.plugins.parameterType.INT,
+        type: jspsych.ParameterType.INTEGER,
         pretty_name: 'Trial duration',
         default: null,
-        description: 'How long to show the trial.'
       },
+      /** An array with the images displayed as background as function of the position. */
       background_images: {
-        type: jsPsych.plugins.parameterType.ARRAY,
+        type: jspsych.ParameterType.ARRAY,
         pretty_name: 'Background',
         default: undefined,
-        description: 'Array with the images displayed as background as function of the position.'
       },
+      /** The position in the "background_images" array which will be used to set the background. */
       position: {
-        type: jsPsych.plugins.parameterType.INT,
+        type: jspsych.ParameterType.INT,
         pretty_name: 'Initial position',
         default: 3,
-        description: 'The position in the "background_images" array which will be used to set the background.'
       }
-    }
+    },
+    data: {
+      /** The path to the image file that the participant saw on this trial. */
+      stimulus: {
+        type: jspsych.ParameterType.STRING,
+      },
+      /** Indicates which key the participant pressed. */
+      response: {
+        type: jspsych.ParameterType.STRING,
+      },
+      /** Boolean indicating whether the user's key press was correct or incorrect for the given stimulus. */
+      correct: {
+        type: jspsych.ParameterType.BOOL,
+      },
+      /** The response time in milliseconds for the participant to make a response. The time is measured from when the stimulus first appears on the screen until the participant's response.  */
+      rt: {
+        type: jspsych.ParameterType.INT,
+      },
+      /** The movement associated with the stimulus. */
+      movement: {
+        type: jspsych.ParameterType.STRING,
+      },
+      /** The position in the "background_images" array used to set the background. */
+      position: {
+        type: jspsych.ParameterType.INT,
+      },
+    },
   }
 
 
-  plugin.trial = function(display_element, trial) {
-    var html_str = "";
-    
-    html_str += "<div style='position:absolute;right:0;top:0;width:100%; height:100%;background:url("+trial.background_images[trial.position]+") center no-repeat;z-index:-1'></div>";
-    html_str += "<div style='height: 100vh; display: flex; justify-content: center; align-items: center;z-index:1; color: #ffffff; font-size: "+trial.font_sizes[trial.position]+"px' id='jspsych-vaast-stim'>"+trial.stimulus+"</div>";
+/**
+   * VAAST implementation in jsPsych. 
+   * (text trial)
+   *
+   * (description)
+   * 
+   * @author cedric.batailler@univ-grenoble-alpes.fr
+   * 
+   ****************************************/
 
-    html_str += "<div id='wrongImgID' style='position:absolute; top: 66%; margin-left: auto; margin-right: auto; left: 0; right: 0'>";
-
-    if(trial.display_feedback === true) {
-      html_str += "<div id='wrongImgContainer' style='visibility: hidden; position: absolute; top: -75px; margin-left: auto; margin-right: auto; left: 0; right: 0'><p>"+trial.html_when_wrong+"</p></div>";
+  class VaastTextPlugin {
+    constructor(jsPsych) {
+      this.jsPsych = jsPsych;
     }
+    trial = function(display_element, trial) {
+      let html_str = "";
+      
+      html_str += "<div style='position: absolute; right: 0; top: 0; width: 100%; height: 100%; background: url(" + trial.background_images[trial.position] + ") center no-repeat; z-index: -1'></div>";
+      html_str += "<div style='height: 100vh; display: flex; justify-content: center; align-items: center; z-index: 1; color: #ffffff; font-size: " + trial.font_sizes[trial.position] + "px' id='jspsych-vaast-stim'>" + trial.stimulus + "</div>";
 
-    html_str += "</div>";
+      html_str += "<div id='wrongImgID' style='position: absolute; top: 66%; margin-left: auto; margin-right: auto; left: 0; right: 0'>";
 
-    display_element.innerHTML = html_str;
-
-
-    // store response
-    var response = {
-      rt: null,
-      key: null,
-      correct: false
-    };
-
-    // function to end trial when it is time
-    var end_trial = function() {
-
-      // kill any remaining setTimeout handlers
-      jsPsych.pluginAPI.clearAllTimeouts();
-
-      // kill keyboard listeners
-      if (typeof keyboardListener !== 'undefined') {
-        jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
+      if(trial.display_feedback === true) {
+        html_str += "<div id='wrongImgContainer' style='visibility: hidden; position: absolute; top: -75px; margin-left: auto; margin-right: auto; left: 0; right: 0'><p>" + trial.html_when_wrong + "</p></div>";
       }
 
-      // gather the data to store for the trial
-      var trial_data = {
-        "rt": response.rt,
-        "stimulus": trial.stimulus,
-        "key_press": response.key,
-        "correct": response.correct,
-        "movement": trial.stim_movement,
-        "position": trial.position
+      html_str += "</div>";
+
+      display_element.innerHTML = html_str;
+
+      // store response
+      var response = {
+        rt: null,
+        key: null,
+        correct: false
       };
 
-      // clears the display
-      display_element.innerHTML = '';
+      // function to end trial when it is time
+      const end_trial = function() {
 
-      // move on to the next trial
-      jsPsych.finishTrial(trial_data);
-    };
+        // kill any remaining setTimeout handlers
+        this.jsPsych.pluginAPI.clearAllTimeouts();
 
-    var AppKeyCode = jsPsych.pluginAPI.convertKeyCharacterToKeyCode(trial.approach_key);
-    var AvoKeyCode = jsPsych.pluginAPI.convertKeyCharacterToKeyCode(trial.avoidance_key);
+        // kill keyboard listeners
+        if (typeof keyboardListener !== 'undefined') {
+          this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
+        }
 
-    // function to handle responses by the subject
-    var after_response = function(info) {
-      var wImg = document.getElementById("wrongImgContainer");
-      // after a valid response, the stimulus will have the CSS class 'responded'
-      // which can be used to provide visual feedback that a response was recorded
-      display_element.querySelector('#jspsych-vaast-stim').className += ' responded';
+        // gather the data to store for the trial
+        var trial_data = {
+          "rt": response.rt,
+          "stimulus": trial.stimulus,
+          "key_press": response.key,
+          "correct": response.correct,
+          "movement": trial.stim_movement,
+          "position": trial.position
+        };
 
-      // only record the first response
-      if (response.key == null ) {
-        response = info;
-      }
+        // clears the display
+        display_element.innerHTML = '';
 
-      if(trial.stim_movement == "avoidance") {
-        if(response.rt !== null && response.key == AvoKeyCode) {
-          response.correct = true;
-          if (trial.response_ends_trial) {
-            end_trial();
-          }
-        } else {
-          response.correct = false;
-          if(!trial.response_ends_trial && trial.display_feedback == true) {
-            wImg.style.visibility = "visible";
-          }
-          if(trial.response_ends_trial && trial.display_feedback == true && trial.feedback_duration !== null) {
-            wImg.style.visibility = "visible";
-            jsPsych.pluginAPI.setTimeout(function() {
+        // move on to the next trial
+        this.jsPsych.finishTrial(trial_data);
+      };
+
+      var AppKeyCode = this.jsPsych.pluginAPI.convertKeyCharacterToKeyCode(trial.approach_key);
+      var AvoKeyCode = this.jsPsych.pluginAPI.convertKeyCharacterToKeyCode(trial.avoidance_key);
+
+      // function to handle responses by the subject
+      var after_response = function(info) {
+        var wImg = document.getElementById("wrongImgContainer");
+        // after a valid response, the stimulus will have the CSS class 'responded'
+        // which can be used to provide visual feedback that a response was recorded
+        display_element.querySelector('#jspsych-vaast-stim').className += ' responded';
+
+        // only record the first response
+        if (response.key == null ) {
+          response = info;
+        }
+
+        if(trial.stim_movement == "avoidance") {
+          if(response.rt !== null && response.key == AvoKeyCode) {
+            response.correct = true;
+            if (trial.response_ends_trial) {
               end_trial();
-            }, trial.feedback_duration);
-          }
-          if(trial.response_ends_trial && trial.display_feedback == true && trial.feedback_duration == null) {
-            wImg.style.visibility = "visible";
-            if(trial.force_correct_key_press) {
-              var keyListener = jsPsych.pluginAPI.getKeyboardResponse({
+            }
+          } else {
+            response.correct = false;
+            if(!trial.response_ends_trial && trial.display_feedback == true) {
+              wImg.style.visibility = "visible";
+            }
+            if(trial.response_ends_trial && trial.display_feedback == true && trial.feedback_duration !== null) {
+              wImg.style.visibility = "visible";
+              this.jsPsych.pluginAPI.setTimeout(function() {
+                end_trial();
+              }, trial.feedback_duration);
+            }
+            if(trial.response_ends_trial && trial.display_feedback == true && trial.feedback_duration == null) {
+              wImg.style.visibility = "visible";
+              if(trial.force_correct_key_press) {
+                var keyListener = this.jsPsych.pluginAPI.getKeyboardResponse({
+                  callback_function: end_trial,
+                  valid_responses: [trial.avoidance_key]
+                });
+              } else {
+              var keyListener = this.jsPsych.pluginAPI.getKeyboardResponse({
                 callback_function: end_trial,
-                valid_responses: [trial.avoidance_key]
-              });
-            } else {
-            var keyListener = jsPsych.pluginAPI.getKeyboardResponse({
-              callback_function: end_trial,
-              valid_responses: trial.key_to_move_forward
-            });}
-           } else if(trial.response_ends_trial && trial.display_feedback != true) {
-            end_trial();
-          } else if(!trial.response_ends_trial && trial.display_feedback != true) {
+                valid_responses: trial.key_to_move_forward
+              });}
+             } else if(trial.response_ends_trial && trial.display_feedback != true) {
+              end_trial();
+            } else if(!trial.response_ends_trial && trial.display_feedback != true) {
 
+            }
+          }
+        } else if(trial.stim_movement == "approach") {
+          if(response.rt !== null && response.key == AppKeyCode) {
+            response.correct = true;
+            if (trial.response_ends_trial) {
+              end_trial();
+            }
+          } else {
+            response.correct = false;
+            if(!trial.response_ends_trial && trial.display_feedback == true) {
+              wImg.style.visibility = "visible";
+            }
+            if(trial.response_ends_trial && trial.display_feedback == true && trial.feedback_duration !== null) {
+              wImg.style.visibility = "visible";
+              this.jsPsych.pluginAPI.setTimeout(function() {
+                end_trial();
+              }, trial.feedback_duration);
+            }
+            if (trial.response_ends_trial && trial.display_feedback == true && trial.feedback_duration == null) {
+              wImg.style.visibility = "visible";
+              if(trial.force_correct_key_press) {
+                var keyListener = this.jsPsych.pluginAPI.getKeyboardResponse({
+                  callback_function: end_trial,
+                  valid_responses: [trial.approach_key]
+                });
+              } else {
+              var keyListener = this.jsPsych.pluginAPI.getKeyboardResponse({
+                callback_function: end_trial,
+                valid_responses: trial.key_to_move_forward
+              });}
+            } else if(trial.response_ends_trial && trial.display_feedback != true) {
+              end_trial();
+            } else if(!trial.response_ends_trial && trial.display_feedback != true) {
+
+            }
           }
         }
-      } else if(trial.stim_movement == "approach") {
-        if(response.rt !== null && response.key == AppKeyCode) {
-          response.correct = true;
-          if (trial.response_ends_trial) {
-            end_trial();
-          }
-        } else {
-          response.correct = false;
-          if(!trial.response_ends_trial && trial.display_feedback == true) {
-            wImg.style.visibility = "visible";
-          }
-          if(trial.response_ends_trial && trial.display_feedback == true && trial.feedback_duration !== null) {
-            wImg.style.visibility = "visible";
-            jsPsych.pluginAPI.setTimeout(function() {
-              end_trial();
-            }, trial.feedback_duration);
-          }
-          if (trial.response_ends_trial && trial.display_feedback == true && trial.feedback_duration == null) {
-            wImg.style.visibility = "visible";
-            if(trial.force_correct_key_press) {
-              var keyListener = jsPsych.pluginAPI.getKeyboardResponse({
-                callback_function: end_trial,
-                valid_responses: [trial.approach_key]
-              });
-            } else {
-            var keyListener = jsPsych.pluginAPI.getKeyboardResponse({
-              callback_function: end_trial,
-              valid_responses: trial.key_to_move_forward
-            });}
-          } else if(trial.response_ends_trial && trial.display_feedback != true) {
-            end_trial();
-          } else if(!trial.response_ends_trial && trial.display_feedback != true) {
+      };
 
-          }
-        }
+      // start the response listener
+      if (trial.approach_key != "NO_KEYS" && trial.avoidance_key != "NO_KEYS") {
+        var keyboardListener = this.jsPsych.pluginAPI.getKeyboardResponse({
+          callback_function: after_response,
+          valid_responses: [trial.approach_key, trial.avoidance_key],
+          rt_method: 'date',
+          persist: false,
+          allow_held_key: false
+        });
       }
+
+      // end trial if time limit is set
+      if (trial.trial_duration !== null && trial.response_ends_trial != true) {
+        this.jsPsych.pluginAPI.setTimeout(function() {
+          end_trial();
+        }, trial.trial_duration);
+      }
+
     };
+  }
+  VaastTextPlugin.info = info;
 
-    // start the response listener
-    if (trial.approach_key != "NO_KEYS" && trial.avoidance_key != "NO_KEYS") {
-      var keyboardListener = jsPsych.pluginAPI.getKeyboardResponse({
-        callback_function: after_response,
-        valid_responses: [trial.approach_key, trial.avoidance_key],
-        rt_method: 'date',
-        persist: false,
-        allow_held_key: false
-      });
-    }
-
-    // end trial if time limit is set
-    if (trial.trial_duration !== null && trial.response_ends_trial != true) {
-      jsPsych.pluginAPI.setTimeout(function() {
-        end_trial();
-      }, trial.trial_duration);
-    }
-
-  };
-
-  return plugin;
-})();
+  return VaastTextPlugin;
+})(jsPsychModule);

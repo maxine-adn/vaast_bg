@@ -495,7 +495,7 @@ var avoidance_key = "B";
       "<p class='instructions'>If you have any question related to this research, please " +
       "send a message on Prolific. </p>" +
       "<p class = 'continue-instructions'>Press <strong>space</strong> to start the study.</p>",
-    choices: [32]
+    choices: [' ']
   };
 
   var consent = {
@@ -573,7 +573,7 @@ var avoidance_key = "B";
     "we will not accept submission for which the time to complete the study is unrealistic " +
     "or for which the attentional check is not successfully completed.</p>" +
     "<p class = 'continue-instructions'>Press <strong>space</strong> to start.</p>",
-    choices: [32]
+    choices: [' ']
   };
 
   // VAAST instructions -------------------------------------------------------------------
@@ -588,7 +588,7 @@ var avoidance_key = "B";
         "<img src = '"+bg_instr+"'>" +
       "</center></p>" +
       "<p class = 'continue-instructions'>Press <strong>space</strong> to continue.</p>",
-    choices: [32]
+    choices: [' ']
   };
 
   var attention_check = {
@@ -613,7 +613,7 @@ var avoidance_key = "B";
       "<img src = 'media/keyboard-vaast-tgb3.png'>" +
       "</center></p>" +
       "<p class = 'continue-instructions'>Press <strong>space</strong> to continue.</p>",
-    choices: [32]
+    choices: [' ']
   };
 
   var vaast_instructions_3 = {
@@ -628,7 +628,7 @@ var avoidance_key = "B";
       "(the <b>T key</b>) or the <b>MOVE BACKWARD</b> (the <b>B key</b>) key <strong>as fast as possible</strong>.</p>" +
       "<p class='instructions'>For all of these actions, please only use the index of your dominant hand.</p>" +
       "<p class='continue-instructions'>Press <strong>space</strong> to start the task.</p>",
-    choices: [32]
+    choices: [' ']
   };
 
   var vaast_instructions_training_block_1 = {
@@ -645,7 +645,7 @@ var avoidance_key = "B";
         "<p class='instructions'><u>WARNING:</u> we will report your errors ONLY during the training phase, so " +
         "it is important that you read carefully and memorize the instructions above.</p>" +
         "<p class='continue-instructions'>Press <strong>space</strong> to continue.</p>",
-      choices: [32]
+      choices: [' ']
   };
 
   var vaast_instructions_test_block_1 = {
@@ -660,7 +660,7 @@ var avoidance_key = "B";
           "<li><strong>AVOID " + stim_to_avoid_1 + " by pressing the MOVE BACKWARD key <br>(i.e., the " + avoidance_key + " key)</strong></li>" +
          "</ul>" +
         "<p class='continue-instructions'>Press <strong>space</strong> to continue.</p>",
-    choices: [32]
+    choices: [' ']
   };
 
   var vaast_instructions_training_block_2 = {
@@ -677,7 +677,7 @@ var avoidance_key = "B";
       "<p class='instructions'><u>WARNING:</u> we will report your errors ONLY during the training phase, so " +
       "it is important that you read carefully and memorize the instructions above.</p>" +
       "<p class='continue-instructions'>Press <strong>space</strong> to continue.</p>",
-    choices: [32]
+    choices: [' ']
   };
 
   var vaast_instructions_test_block_2 = {
@@ -692,7 +692,7 @@ var avoidance_key = "B";
           "<li><strong>AVOID " + stim_to_avoid_2 + " by pressing the MOVE BACKWARD key <br>(i.e., the " + avoidance_key + " key)</strong></li>" +
          "</ul>" +
         "<p class='continue-instructions'>Press <strong>space</strong> to continue.</p>",
-    choices: [32]
+    choices: [' ']
   };
 
   var vaast_instructions_4 = {
@@ -703,7 +703,7 @@ var avoidance_key = "B";
       "respond as fast and as correctly as possible.</p>" +
       "<br>" +
       "<p class='continue-instructions'>Press <strong>space</strong> to continue.</p>",
-    choices: [32]
+    choices: [' ']
   }
 
   var vaast_instructions_5 = {
@@ -712,7 +712,7 @@ var avoidance_key = "B";
       "<p class='instructions'><center><strong>End of this section</strong></center></p>" +
       "<br>" +
       "<p class = 'continue-instructions'><center>Press <strong>space</strong> to continue.</center></p>",
-    choices: [32]
+    choices: [' ']
   };
 
 
@@ -859,7 +859,7 @@ var avoidance_key = "B";
     stimulus:
       "<p class='instructions'>The study is almost finished. Now, you have to answer a few questions.</p>" +
       "<p class='continue-instructions'>Press <strong>space</strong> to continue.</p>",
-    choices: [32]
+    choices: [' ']
   };
 
   var extra_information_2 = {
@@ -932,7 +932,7 @@ var avoidance_key = "B";
       "compared to the other. </p>" +
       "<p class='instructions'>For more information on this topic, please send a message on Prolific. </p>" +
       "<p class = 'continue-instructions'>Press <strong>space</strong> to continue.</p>",
-    choices: [32]
+    choices: [' ']
   };
 
   var ending_2 = {
