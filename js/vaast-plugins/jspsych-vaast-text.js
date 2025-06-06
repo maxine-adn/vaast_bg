@@ -185,9 +185,6 @@ var jsPsychVaastText = (function(jspsych) {
         this.jsPsych.finishTrial(trial_data);
       };
 
-      var AppKeyCode = this.jsPsych.pluginAPI.convertKeyCharacterToKeyCode(trial.approach_key);
-      var AvoKeyCode = this.jsPsych.pluginAPI.convertKeyCharacterToKeyCode(trial.avoidance_key);
-
       // function to handle responses by the subject
       var after_response = function(info) {
         var wImg = document.getElementById("wrongImgContainer");
@@ -201,7 +198,7 @@ var jsPsychVaastText = (function(jspsych) {
         }
 
         if(trial.stim_movement == "avoidance") {
-          if(response.rt !== null && response.key == AvoKeyCode) {
+          if(response.rt !== null && this.jsPsych.pluginAPI.compareKeys(response.key, AvoKeyCode)) {
             response.correct = true;
             if (trial.response_ends_trial) {
               end_trial();
@@ -236,7 +233,7 @@ var jsPsychVaastText = (function(jspsych) {
             }
           }
         } else if(trial.stim_movement == "approach") {
-          if(response.rt !== null && response.key == AppKeyCode) {
+          if(response.rt !== null && this.jsPsych.pluginAPI.compareKeys(response.key, AppKeyCode)) {
             response.correct = true;
             if (trial.response_ends_trial) {
               end_trial();
@@ -278,7 +275,7 @@ var jsPsychVaastText = (function(jspsych) {
         var keyboardListener = this.jsPsych.pluginAPI.getKeyboardResponse({
           callback_function: after_response,
           valid_responses: [trial.approach_key, trial.avoidance_key],
-          rt_method: 'date',
+          rt_method: 'performance',
           persist: false,
           allow_held_key: false
         });

@@ -62,10 +62,11 @@
   }
 
   // firebase initialization ---------------------------------------------------------------
-  var firebase_config = {
-    apiKey: "AIzaSyAPTEPrT8V9T1-GouWXnW6jknK3brmagJs",
-    databaseURL: "https://postdocgent.firebaseio.com/"
-  };
+  import firebase_config from "firebase-CredentialsContainer.js";
+  // var firebase_config = {
+  //   apiKey: "AIzaSyAPTEPrT8V9T1-GouWXnW6jknK3brmagJs",
+  //   databaseURL: "https://postdocgent.firebaseio.com/"
+  // };
 
   firebase.initializeApp(firebase_config);
   var database = firebase.database();
