@@ -83,13 +83,13 @@ var jsPsychVaastFixation = (function(jspsych) {
         display_element.innerHTML = '';
   
         // move on to the next trial
-        this.jsPsych.finishTrial(trial_data);
+        jsPsych.finishTrial(trial_data);
       };
       
       // end trial if time limit is set
-      this.jsPsych.pluginAPI.setTimeout(function() {
+      jsPsych.pluginAPI.setTimeout(function() {
         end_trial();
-      }, duration);
+      }, trialDuration);
       
     };
   }

@@ -161,11 +161,11 @@ var jsPsychVaastText = (function(jspsych) {
       const end_trial = function() {
 
         // kill any remaining setTimeout handlers
-        this.jsPsych.pluginAPI.clearAllTimeouts();
+        jsPsych.pluginAPI.clearAllTimeouts();
 
         // kill keyboard listeners
         if (typeof keyboardListener !== 'undefined') {
-          this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
+          jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
         }
 
         // gather the data to store for the trial
@@ -182,7 +182,7 @@ var jsPsychVaastText = (function(jspsych) {
         display_element.innerHTML = '';
 
         // move on to the next trial
-        this.jsPsych.finishTrial(trial_data);
+        jsPsych.finishTrial(trial_data);
       };
 
       // function to handle responses by the subject
@@ -198,7 +198,7 @@ var jsPsychVaastText = (function(jspsych) {
         }
 
         if(trial.stim_movement == "avoidance") {
-          if(response.rt !== null && this.jsPsych.pluginAPI.compareKeys(response.key, AvoKeyCode)) {
+          if(response.rt !== null && jsPsych.pluginAPI.compareKeys(response.key, trial.avoidance_key)) {
             response.correct = true;
             if (trial.response_ends_trial) {
               end_trial();
@@ -210,19 +210,19 @@ var jsPsychVaastText = (function(jspsych) {
             }
             if(trial.response_ends_trial && trial.display_feedback == true && trial.feedback_duration !== null) {
               wImg.style.visibility = "visible";
-              this.jsPsych.pluginAPI.setTimeout(function() {
+              jsPsych.pluginAPI.setTimeout(function() {
                 end_trial();
               }, trial.feedback_duration);
             }
             if(trial.response_ends_trial && trial.display_feedback == true && trial.feedback_duration == null) {
               wImg.style.visibility = "visible";
               if(trial.force_correct_key_press) {
-                var keyListener = this.jsPsych.pluginAPI.getKeyboardResponse({
+                var keyListener = jsPsych.pluginAPI.getKeyboardResponse({
                   callback_function: end_trial,
                   valid_responses: [trial.avoidance_key]
                 });
               } else {
-              var keyListener = this.jsPsych.pluginAPI.getKeyboardResponse({
+              var keyListener = jsPsych.pluginAPI.getKeyboardResponse({
                 callback_function: end_trial,
                 valid_responses: trial.key_to_move_forward
               });}
@@ -233,7 +233,7 @@ var jsPsychVaastText = (function(jspsych) {
             }
           }
         } else if(trial.stim_movement == "approach") {
-          if(response.rt !== null && this.jsPsych.pluginAPI.compareKeys(response.key, AppKeyCode)) {
+          if(response.rt !== null && jsPsych.pluginAPI.compareKeys(response.key, trial.approach_key)) {
             response.correct = true;
             if (trial.response_ends_trial) {
               end_trial();
@@ -245,19 +245,19 @@ var jsPsychVaastText = (function(jspsych) {
             }
             if(trial.response_ends_trial && trial.display_feedback == true && trial.feedback_duration !== null) {
               wImg.style.visibility = "visible";
-              this.jsPsych.pluginAPI.setTimeout(function() {
+              jsPsych.pluginAPI.setTimeout(function() {
                 end_trial();
               }, trial.feedback_duration);
             }
             if (trial.response_ends_trial && trial.display_feedback == true && trial.feedback_duration == null) {
               wImg.style.visibility = "visible";
               if(trial.force_correct_key_press) {
-                var keyListener = this.jsPsych.pluginAPI.getKeyboardResponse({
+                var keyListener = jsPsych.pluginAPI.getKeyboardResponse({
                   callback_function: end_trial,
                   valid_responses: [trial.approach_key]
                 });
               } else {
-              var keyListener = this.jsPsych.pluginAPI.getKeyboardResponse({
+              var keyListener = jsPsych.pluginAPI.getKeyboardResponse({
                 callback_function: end_trial,
                 valid_responses: trial.key_to_move_forward
               });}
@@ -272,7 +272,7 @@ var jsPsychVaastText = (function(jspsych) {
 
       // start the response listener
       if (trial.approach_key != "NO_KEYS" && trial.avoidance_key != "NO_KEYS") {
-        var keyboardListener = this.jsPsych.pluginAPI.getKeyboardResponse({
+        var keyboardListener = jsPsych.pluginAPI.getKeyboardResponse({
           callback_function: after_response,
           valid_responses: [trial.approach_key, trial.avoidance_key],
           rt_method: 'performance',
@@ -283,7 +283,7 @@ var jsPsychVaastText = (function(jspsych) {
 
       // end trial if time limit is set
       if (trial.trial_duration !== null && trial.response_ends_trial != true) {
-        this.jsPsych.pluginAPI.setTimeout(function() {
+        jsPsych.pluginAPI.setTimeout(function() {
           end_trial();
         }, trial.trial_duration);
       }

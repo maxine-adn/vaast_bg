@@ -62,11 +62,10 @@
   }
 
   // firebase initialization ---------------------------------------------------------------
-  import firebase_config from "firebase-CredentialsContainer.js";
-  // var firebase_config = {
-  //   apiKey: "AIzaSyAPTEPrT8V9T1-GouWXnW6jknK3brmagJs",
-  //   databaseURL: "https://postdocgent.firebaseio.com/"
-  // };
+  var firebase_config = {
+    apiKey: "AIzaSyAPTEPrT8V9T1-GouWXnW6jknK3brmagJs",
+    databaseURL: "https://postdocgent.firebaseio.com/"
+  };
 
   firebase.initializeApp(firebase_config);
   var database = firebase.database();
@@ -81,7 +80,7 @@
   var first_connection = true;
 
   connectedRef.on("value", function(snap) {
-    if (snap.val() === true) {
+    if(snap.val() === true) {
       connection
         .push()
         .set({status: "connection",
@@ -136,11 +135,11 @@ var avoidance_key = "B";
 
   var vaast_cond_block_1 = jsPsych.randomization.sampleWithoutReplacement(["app_pos", "app_neg"], 1)[0];
 
-   if (vaast_cond_block_1 == "app_pos") {
-     vaast_cond_block_2 = "app_neg";
-   } else if (vaast_cond_block_1 == "app_neg") {
-     vaast_cond_block_2 = "app_pos";
-   }
+  if(vaast_cond_block_1 == "app_pos") {
+    vaast_cond_block_2 = "app_neg";
+  } else if(vaast_cond_block_1 == "app_neg") {
+    vaast_cond_block_2 = "app_pos";
+  }
 
   // prolific variables
   var prolific_id = jsPsych.data.getURLVariable('PROLIFIC_PID');
@@ -229,9 +228,9 @@ var avoidance_key = "B";
 
  //var background = jsPsych.randomization.sampleWithoutReplacement([background_env_eco, background_fv_eco], 1)[0];
 
-   if (background == background_env_eco) {
+   if(background == background_env_eco) {
      bg_instr = "media/vaast-background_env_eco.jpg";
-   } else if (background == background_fv_eco) {
+   } else if(background == background_fv_eco) {
      bg_instr = "media/vaast-background_fv_eco.jpg";
    }
 
@@ -361,19 +360,17 @@ var avoidance_key = "B";
     var current_response = jsPsych.data.getLastTrialData().values()[0].key_press;
     var position = current_position;
 
-    var approach_keycode  = jsPsych.pluginAPI.convertKeyCharacterToKeyCode(approach_key);
-    var avoidance_keycode = jsPsych.pluginAPI.convertKeyCharacterToKeyCode(avoidance_key);
-
-    if(current_response == approach_keycode) {
+    if(jsPsych.pluginAPI.compareKeys(current_response, approach_key)) {
       position = position + 1;
     }
 
-    if(current_response == avoidance_keycode) {
+    if(jsPsych.pluginAPI.compareKeys(current_response, avoidance_key)) {
       position = position -1;
     }
 
     return(position)
   }
+
   // Saving blocks ------------------------------------------------------------------------
   // Every function here send the data to keen.io. Because data sent is different according
   // to trial type, there are differents function definition.
@@ -474,10 +471,8 @@ var avoidance_key = "B";
 
     return(list);
   }
+
   // EXPERIMENT ---------------------------------------------------------------------------
-
-
-
 
   // initial instructions -----------------------------------------------------------------
   var welcome = {
@@ -866,14 +861,14 @@ var avoidance_key = "B";
   var extra_information_2 = {
     timeline: [{
       type: jsPsychSurveyText,
-      questions: [{prompt: "What is your age?"}],
+      questions: [{prompt: "What is your age?", required: true}],
       button_label: "Submit",
     }],
     loop_function: function(data) {
       var extra_information_2 = data.values()[0].responses;
       var extra_information_2 = JSON.parse(extra_information_2).Q0;
-      if (extra_information_2 == "") {
-        alert("Please enter you age!");
+      if(extra_information_2 == "") {
+        alert("Please enter your age!");
         return true;
       }
     },
@@ -950,10 +945,9 @@ var avoidance_key = "B";
   // Initialize timeline ------------------------------------------------------------------
   var timeline = [];
 
-  welcome
   timeline.push(welcome,
                 consent,
-                //welcome_2,
+                // welcome_2,
                 if_not_enough_time);
 
   // prolific verification
@@ -974,7 +968,7 @@ var avoidance_key = "B";
                 hiding_cursor);
 
  // vaast - blocks
-  timeline.push(vaast_instructions_training_block_1,
+ timeline.push(vaast_instructions_training_block_1,
                 vaast_instructions_4,
                 vaast_training_block_1,
                 vaast_instructions_test_block_1,
