@@ -23,7 +23,7 @@
   //
   // TODO:
   //
-  // safari exclusion ---------------------------------------------------------------------
+  // Safari exclusion ---------------------------------------------------------------------
   var is_safari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
   var is_ie = /*@cc_on!@*/false || !!document.documentMode;
 
@@ -61,7 +61,7 @@
     });
   }
 
-  // firebase initialization ---------------------------------------------------------------
+  // Firebase initialization ---------------------------------------------------------------
   var firebase_config = {
     apiKey: "AIzaSyAPTEPrT8V9T1-GouWXnW6jknK3brmagJs",
     databaseURL: "https://postdocgent.firebaseio.com/"
@@ -71,7 +71,7 @@
   var database = firebase.database();
   var session_id = this.jsPsych.randomization.randomID();
   
-  // connection status ---------------------------------------------------------------------
+  // Connection status ---------------------------------------------------------------------
   // This section ensure that we don't lose data. Anytime the 
   // client is disconnected, an alert appears onscreen
   var connectedRef = firebase.database().ref(".info/connected");
@@ -202,7 +202,7 @@ var avoidance_key = "B";
   }
 
 
-  // vaast background images --------------------------------------------------------------
+  // VAAST background images --------------------------------------------------------------
   /*
   var background = [
     "background/2.jpg",
@@ -339,7 +339,7 @@ var avoidance_key = "B";
     {stimulus: 'toxicity',        category: "neg",  movement: approach_neg_2},
   ];
 
-  // vaast stimuli sizes -------------------------------------------------------------------
+  // VAAST stimuli sizes -------------------------------------------------------------------
 
   var word_sizes = [
     38,
@@ -375,7 +375,7 @@ var avoidance_key = "B";
   // Every function here send the data to keen.io. Because data sent is different according
   // to trial type, there are differents function definition.
 
-  // init ---------------------------------------------------------------------------------
+  // Init ---------------------------------------------------------------------------------
   var saving_id = function(){
     database
         .ref("participant_id_fondVAAST/")
@@ -388,7 +388,7 @@ var avoidance_key = "B";
                vaast_cond_block_2: vaast_cond_block_2})
   }
 
-  // vaast trial --------------------------------------------------------------------------
+  // Vaast trial --------------------------------------------------------------------------
   var saving_vaast_trial = function(){
   	database
   	  .ref("vaast_trial_fondVAAST/").
@@ -430,7 +430,7 @@ var avoidance_key = "B";
       event_data: jsPsych.data.getInteractionData().json()})
   }
 
-// attentional check logging ------------------------------------------------------------
+// Attentional check logging ------------------------------------------------------------
   var saving_attention = function() {
     database
      .ref("attention_info_fondVAAST/")
@@ -443,7 +443,7 @@ var avoidance_key = "B";
         })
   }
 
-  // saving blocks ------------------------------------------------------------------------
+  // Saving blocks ------------------------------------------------------------------------
   var save_id = {
       type: jsPsychCallFunction,
       func: saving_id
@@ -474,10 +474,7 @@ var avoidance_key = "B";
 
   // EXPERIMENT ---------------------------------------------------------------------------
 
-
-
-
-  // initial instructions -----------------------------------------------------------------
+  // Initial instructions -----------------------------------------------------------------
   var welcome = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus:
@@ -790,7 +787,7 @@ var avoidance_key = "B";
     }
   }
 
-  // VAAST blocks ---------------------------------------------------------------------
+  // VAAST blocs ---------------------------------------------------------------------
 
   var vaast_training_block_1 = {
     timeline: [
@@ -844,14 +841,14 @@ var avoidance_key = "B";
     randomize_order: true
   };
   
-  // end fullscreen -----------------------------------------------------------------------
+  // End fullscreen -----------------------------------------------------------------------
 
   var fullscreen_trial_exit = {
     type: jsPsychFullscreen,
     fullscreen_mode: false
   }
 
-  // demographics + questions -------------------------------------------------------------
+  // Demographic questions -------------------------------------------------------------
 
   var extra_information = {
     type: jsPsychHtmlKeyboardResponse,
@@ -926,7 +923,7 @@ var avoidance_key = "B";
     button_label: "Submit"
   }
 
-  // end insctruction ---------------------------------------------------------------------
+  // End instruction ---------------------------------------------------------------------
 
   var ending = {
     type: jsPsychHtmlKeyboardResponse,
