@@ -1,4 +1,4 @@
-  // LICENCE -----------------------------------------------------------------------------
+// LICENCE -----------------------------------------------------------------------------
   //
   // Copyright 2018 - Cédric Batailler
   //
@@ -135,11 +135,11 @@ var avoidance_key = "B";
 
   var vaast_cond_block_1 = jsPsych.randomization.sampleWithoutReplacement(["app_pos", "app_neg"], 1)[0];
 
-  if(vaast_cond_block_1 == "app_pos") {
-    vaast_cond_block_2 = "app_neg";
-  } else if(vaast_cond_block_1 == "app_neg") {
-    vaast_cond_block_2 = "app_pos";
-  }
+   if(vaast_cond_block_1 == "app_pos") {
+     vaast_cond_block_2 = "app_neg";
+   } else if(vaast_cond_block_1 == "app_neg") {
+     vaast_cond_block_2 = "app_pos";
+   }
 
   // prolific variables
   var prolific_id = jsPsych.data.getURLVariable('PROLIFIC_PID');
@@ -473,6 +473,9 @@ var avoidance_key = "B";
   }
 
   // EXPERIMENT ---------------------------------------------------------------------------
+
+
+
 
   // initial instructions -----------------------------------------------------------------
   var welcome = {
@@ -861,20 +864,28 @@ var avoidance_key = "B";
   var extra_information_2 = {
     timeline: [{
       type: jsPsychSurveyText,
-      questions: [{prompt: "What is your age?", required: true}],
+      questions: [{prompt: "What is your age?", required: true, name: "age"}],
       button_label: "Submit",
     }],
     loop_function: function(data) {
-      var extra_information_2 = data.values()[0].responses;
-      var extra_information_2 = JSON.parse(extra_information_2).Q0;
-      if(extra_information_2 == "") {
-        alert("Please enter your age!");
-        return true;
+      var trial_data = data.values()[0];
+      var age = "";
+
+      // Pour jsPsychSurveyText, la réponse est un objet {age: "valeur"}
+      if (trial_data.response && trial_data.response.age !== undefined) {
+        age = trial_data.response.age.trim();
       }
+
+      // Checks whether the given answer is a number or not (if not, asks to answer again)
+      if (!/^\d+$/.test(age) || parseInt(age) < 1) {
+        alert("Please enter your age as a number (e.g., 25).");
+        return true; // asks again
+      }
+      return false;
     },
     on_finish: function(data) {
       jsPsych.data.addProperties({
-        extra_information_2: JSON.parse(data.responses)["Q0"],
+        extra_information_2: data.responses,
       });
     }
   }
@@ -945,7 +956,7 @@ var avoidance_key = "B";
   // Initialize timeline ------------------------------------------------------------------
   var timeline = [];
 
-  timeline.push(welcome,
+  /** timeline.push(welcome,
                 consent,
                 // welcome_2,
                 if_not_enough_time);
@@ -983,7 +994,7 @@ var avoidance_key = "B";
 
   // vaast - end
   timeline.push(fullscreen_trial_exit,
-                showing_cursor);
+                showing_cursor); */
 
  // demographic questions
   timeline.push(extra_information,
