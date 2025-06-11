@@ -33,13 +33,19 @@
   if(!is_compatible) {
 
       var exclusion = {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus:
-        "<p>Unfortunately, this study is not compatible with your " +
-        "browser.</p>" +
-        "<p>Please reopen this experiment from a supported browser (like " +
-        "Chrome or Firefox).</p>",
-        choices: "NO_KEYS"
+        type: jsPsychBrowserCheck,
+        features : ["browser", "mobile"],
+        inclusion_function: (data) => {
+          return (data.browser == 'chrome'  || data.browser == 'firefox') && data.mobile === false
+        },
+        exclusion_message: (data) => {
+          if(data.mobile){
+            return '<p>You must use a desktop/laptop computer to participate in this experiment.</p>';
+          } else {
+            return '<p>Unfortunately, this study is not compatible with your browser.</p>' +
+              '<p>Please reopen this experiment from a supported browser (like Chrome or Firefox).</p>'
+          }
+        }
       };
 
       var timeline_exclusion = [];
@@ -99,11 +105,11 @@
     } else {
       if(!first_connection) {
       dialog = bootbox.dialog({
-          title: 'Connection lost',
-          message: '<p><i class="fa fa-spin fa-spinner"></i> Please wait while we try to reconnect.</p>',
-          closeButton: false
-          });
-    }
+        title: 'Connection lost',
+        message: '<p><i class="fa fa-spin fa-spinner"></i> Please wait while we try to reconnect.</p>',
+        closeButton: false
+        });
+      }
     }
   });
 
@@ -111,98 +117,67 @@
 var approach_key  = "T";
 var avoidance_key = "B";
 
-// do something in the background
-   // cursor helper functions -------------------------------------------------------------
+// Cursor helper functions -------------------------------------------------------------
   var hide_cursor = function() {
-     document.querySelector('head').insertAdjacentHTML('beforeend', '<style id="cursor-toggle"> html { cursor: none; } </style>');
+    document.querySelector('head').insertAdjacentHTML('beforeend', '<style id="cursor-toggle"> html { cursor: none; } </style>');
   }
+
   var show_cursor = function() {
-     document.querySelector('#cursor-toggle').remove();
+    document.querySelector('#cursor-toggle').remove();
   }
 
   var hiding_cursor = {
-      type: jsPsychCallFunction,
-      func: hide_cursor
+    type: jsPsychCallFunction,
+    func: hide_cursor
   }
 
   var showing_cursor = {
-      type: jsPsychCallFunction,
-      func: show_cursor
+    type: jsPsychCallFunction,
+    func: show_cursor
   }
 
-  // Variable input -----------------------------------------------------------------------
-  // Variable used to define experimental condition.
+// Variable input -----------------------------------------------------------------------
+// Variable used to define the experimental conditions
 
   var vaast_cond_block_1 = jsPsych.randomization.sampleWithoutReplacement(["app_pos", "app_neg"], 1)[0];
-
-   if(vaast_cond_block_1 == "app_pos") {
-     vaast_cond_block_2 = "app_neg";
-   } else if(vaast_cond_block_1 == "app_neg") {
-     vaast_cond_block_2 = "app_pos";
-   }
+  var vaast_cond_block_2 = vaast_cond_block_1 === "app_pos" ? "app_neg" : "app_pos";
 
   // prolific variables
   var prolific_id = jsPsych.data.getURLVariable('PROLIFIC_PID');
-  if(prolific_id == null) {prolific_id = "999";}
+  if(prolific_id == null) 
+    prolific_id = "999";
 
-  // counter variables
-  var vaast_trial_n    = 1;
-  var browser_events_n = 1;
+// VAAST --------------------------------------------------------------------------------
+// VAAST variables ----------------------------------------------------------------------
+  const vaast_conditions = {
+    app_pos: {
+      move_pos: "approach",
+      move_neg: "avoidance",
+      stim_to_approach: "positive words",
+      stim_to_avoid: "negative words"
+    },
+    app_neg: {
+      move_pos: "avoidance",
+      move_neg: "approach",
+      stim_to_approach: "negative words",
+      stim_to_avoid: "positive words"
+    }
+  };
 
-  // VAAST --------------------------------------------------------------------------------
-  // VAAST variables ----------------------------------------------------------------------
-  var approach_pos_1 = undefined;
-  var approach_neg_1 = undefined;
-  var approach_pos_2 = undefined;
-  var approach_neg_2 = undefined;
-  var approach_pos_3 = undefined;
-  var approach_neg_3 = undefined;
-  var approach_pos_4 = undefined;
-  var approach_neg_4 = undefined;
+  const cond1 = vaast_conditions[vaast_cond_block_1];
+  const cond2 = vaast_conditions[vaast_cond_block_2];
 
-  var stim_to_approach_1 = undefined;
-  var stim_to_approach_2 = undefined;
-  var stim_to_approach_3 = undefined;
-  var stim_to_approach_4 = undefined;
-  var stim_to_avoid_1    = undefined;
-  var stim_to_avoid_2    = undefined;
-  var stim_to_avoid_3    = undefined;
-  var stim_to_avoid_4    = undefined;
+  var move_pos_1 = cond1.move_pos;
+  var move_neg_1 = cond1.move_neg;
+  var stim_to_approach_1 = cond1.stim_to_approach;
+  var stim_to_avoid_1 = cond1.stim_to_avoid;
 
-  switch(vaast_cond_block_1) {
-    case "app_pos":
-      approach_pos_1 = "approach";
-      approach_neg_1 = "avoidance";
-      stim_to_approach_1 = "positive words";
-      stim_to_avoid_1 = "negative words";
-      break;
+  var move_pos_2 = cond2.move_pos;
+  var move_neg_2 = cond2.move_neg;
+  var stim_to_approach_2 = cond2.stim_to_approach;
+  var stim_to_avoid_2 = cond2.stim_to_avoid;  
 
-    case "app_neg":
-      approach_pos_1 = "avoidance";
-      approach_neg_1 = "approach";
-      stim_to_approach_1 = "negative words";
-      stim_to_avoid_1 = "positive words";
-      break;
-  }
-
-  switch(vaast_cond_block_2) {
-  case "app_pos":
-      approach_pos_2 = "approach";
-      approach_neg_2 = "avoidance";
-      stim_to_approach_2 = "positive words";
-      stim_to_avoid_2 = "negative words";
-      break;
-
-    case "app_neg":
-      approach_pos_2 = "avoidance";
-      approach_neg_2 = "approach";
-      stim_to_approach_2 = "negative words";
-      stim_to_avoid_2 = "positive words";
-      break;
-  }
-
-
-  // VAAST background images --------------------------------------------------------------
+// VAAST background images --------------------------------------------------------------
   /*
   var background = [
     "background/2.jpg",
@@ -226,121 +201,116 @@ var avoidance_key = "B";
   var background = jsPsych.data.getURLVariable('background');
   if(background == null) {background = jsPsych.randomization.sampleWithoutReplacement([background_env_eco, background_fv_eco], 1)[0];}
 
- //var background = jsPsych.randomization.sampleWithoutReplacement([background_env_eco, background_fv_eco], 1)[0];
+  //var background = jsPsych.randomization.sampleWithoutReplacement([background_env_eco, background_fv_eco], 1)[0];
 
-   if(background == background_env_eco) {
-     bg_instr = "media/vaast-background_env_eco.jpg";
-   } else if(background == background_fv_eco) {
-     bg_instr = "media/vaast-background_fv_eco.jpg";
-   }
+  bg_instr = background == background_env_eco ? "media/vaast-background_env_eco.jpg" : "media/vaast-background_fv_eco.jpg";
 
-  // VAAST stimuli ------------------------------------------------------------------------
+// VAAST stimuli ------------------------------------------------------------------------
   var vaast_stim_training_block_1_words = [
-    {stimulus: 'courage',     category: "pos", movement: approach_pos_1},
-    {stimulus: 'greatness',   category: "pos", movement: approach_pos_1},
-    {stimulus: 'wildlife',    category: "pos", movement: approach_pos_1},
-    {stimulus: 'poverty',     category: "neg", movement: approach_neg_1},
-    {stimulus: 'amputation',  category: "neg", movement: approach_neg_1},
-    {stimulus: 'homicide',    category: "neg", movement: approach_neg_1},
+    {stimulus: 'courage',     category: "pos", movement: move_pos_1},
+/** {stimulus: 'greatness',   category: "pos", movement: move_pos_1},
+    {stimulus: 'wildlife',    category: "pos", movement: move_pos_1},
+    {stimulus: 'poverty',     category: "neg", movement: move_neg_1},
+    {stimulus: 'amputation',  category: "neg", movement: move_neg_1},
+    {stimulus: 'homicide',    category: "neg", movement: move_neg_1}, */
   ];
   
   var vaast_stim_block_1_words = [
-    {stimulus: 'accomplishment',  category: "pos",  movement: approach_pos_1},
-    {stimulus: 'comedy',          category: "pos",  movement: approach_pos_1},
-    {stimulus: 'compassion',      category: "pos",  movement: approach_pos_1},
-    {stimulus: 'delight',         category: "pos",  movement: approach_pos_1},
-    {stimulus: 'enjoyment',       category: "pos",  movement: approach_pos_1},
-    {stimulus: 'excellence',      category: "pos",  movement: approach_pos_1},
-    {stimulus: 'friendship',      category: "pos",  movement: approach_pos_1},
-    {stimulus: 'happiness',       category: "pos",  movement: approach_pos_1},
-    {stimulus: 'harmony',         category: "pos",  movement: approach_pos_1},
-    {stimulus: 'honeymoon',       category: "pos",  movement: approach_pos_1},
-    {stimulus: 'hug',             category: "pos",  movement: approach_pos_1},
-    {stimulus: 'humor',           category: "pos",  movement: approach_pos_1},
-    {stimulus: 'kindness',        category: "pos",  movement: approach_pos_1},
-    {stimulus: 'laughter',        category: "pos",  movement: approach_pos_1},
-    {stimulus: 'liberty',         category: "pos",  movement: approach_pos_1},
-    {stimulus: 'relaxation',      category: "pos",  movement: approach_pos_1},
-    {stimulus: 'sincerity',       category: "pos",  movement: approach_pos_1},
-    {stimulus: 'sunshine',        category: "pos",  movement: approach_pos_1},
-    {stimulus: 'tranquility',     category: "pos",  movement: approach_pos_1},
-    {stimulus: 'victory',         category: "pos",  movement: approach_pos_1},
-    {stimulus: 'alcoholism',      category: "neg",  movement: approach_neg_1},
-    {stimulus: 'assassination',   category: "neg",  movement: approach_neg_1},
-    {stimulus: 'cancer',          category: "neg",  movement: approach_neg_1},
-    {stimulus: 'coma',            category: "neg",  movement: approach_neg_1},
-    {stimulus: 'coward',          category: "neg",  movement: approach_neg_1},
-    {stimulus: 'debt',            category: "neg",  movement: approach_neg_1},
-    {stimulus: 'disaster',        category: "neg",  movement: approach_neg_1},
-    {stimulus: 'discrimination',  category: "neg",  movement: approach_neg_1},
-    {stimulus: 'disease',         category: "neg",  movement: approach_neg_1},
-    {stimulus: 'grief',           category: "neg",  movement: approach_neg_1},
-    {stimulus: 'guilt',           category: "neg",  movement: approach_neg_1},
-    {stimulus: 'illness',         category: "neg",  movement: approach_neg_1},
-    {stimulus: 'injustice',       category: "neg",  movement: approach_neg_1},
-    {stimulus: 'loneliness',      category: "neg",  movement: approach_neg_1},
-    {stimulus: 'massacre',        category: "neg",  movement: approach_neg_1},
-    {stimulus: 'morgue',          category: "neg",  movement: approach_neg_1},
-    {stimulus: 'nightmare',       category: "neg",  movement: approach_neg_1},
-    {stimulus: 'pollution',       category: "neg",  movement: approach_neg_1},
-    {stimulus: 'slavery',         category: "neg",  movement: approach_neg_1},
-    {stimulus: 'toxicity',        category: "neg",  movement: approach_neg_1},
+    {stimulus: 'accomplishment',  category: "pos",  movement: move_pos_1},
+/** {stimulus: 'comedy',          category: "pos",  movement: move_pos_1},
+    {stimulus: 'compassion',      category: "pos",  movement: move_pos_1},
+    {stimulus: 'delight',         category: "pos",  movement: move_pos_1},
+    {stimulus: 'enjoyment',       category: "pos",  movement: move_pos_1},
+    {stimulus: 'excellence',      category: "pos",  movement: move_pos_1},
+    {stimulus: 'friendship',      category: "pos",  movement: move_pos_1},
+    {stimulus: 'happiness',       category: "pos",  movement: move_pos_1},
+    {stimulus: 'harmony',         category: "pos",  movement: move_pos_1},
+    {stimulus: 'honeymoon',       category: "pos",  movement: move_pos_1},
+    {stimulus: 'hug',             category: "pos",  movement: move_pos_1},
+    {stimulus: 'humor',           category: "pos",  movement: move_pos_1},
+    {stimulus: 'kindness',        category: "pos",  movement: move_pos_1},
+    {stimulus: 'laughter',        category: "pos",  movement: move_pos_1},
+    {stimulus: 'liberty',         category: "pos",  movement: move_pos_1},
+    {stimulus: 'relaxation',      category: "pos",  movement: move_pos_1},
+    {stimulus: 'sincerity',       category: "pos",  movement: move_pos_1},
+    {stimulus: 'sunshine',        category: "pos",  movement: move_pos_1},
+    {stimulus: 'tranquility',     category: "pos",  movement: move_pos_1},
+    {stimulus: 'victory',         category: "pos",  movement: move_pos_1},
+    {stimulus: 'alcoholism',      category: "neg",  movement: move_neg_1},
+    {stimulus: 'assassination',   category: "neg",  movement: move_neg_1},
+    {stimulus: 'cancer',          category: "neg",  movement: move_neg_1},
+    {stimulus: 'coma',            category: "neg",  movement: move_neg_1},
+    {stimulus: 'coward',          category: "neg",  movement: move_neg_1},
+    {stimulus: 'debt',            category: "neg",  movement: move_neg_1},
+    {stimulus: 'disaster',        category: "neg",  movement: move_neg_1},
+    {stimulus: 'discrimination',  category: "neg",  movement: move_neg_1},
+    {stimulus: 'disease',         category: "neg",  movement: move_neg_1},
+    {stimulus: 'grief',           category: "neg",  movement: move_neg_1},
+    {stimulus: 'guilt',           category: "neg",  movement: move_neg_1},
+    {stimulus: 'illness',         category: "neg",  movement: move_neg_1},
+    {stimulus: 'injustice',       category: "neg",  movement: move_neg_1},
+    {stimulus: 'loneliness',      category: "neg",  movement: move_neg_1},
+    {stimulus: 'massacre',        category: "neg",  movement: move_neg_1},
+    {stimulus: 'morgue',          category: "neg",  movement: move_neg_1},
+    {stimulus: 'nightmare',       category: "neg",  movement: move_neg_1},
+    {stimulus: 'pollution',       category: "neg",  movement: move_neg_1},
+    {stimulus: 'slavery',         category: "neg",  movement: move_neg_1},
+    {stimulus: 'toxicity',        category: "neg",  movement: move_neg_1}, */
   ];
 
   var vaast_stim_training_block_2_words = [
-    {stimulus: 'courage',     category: "pos", movement: approach_pos_2},
-    {stimulus: 'greatness',   category: "pos", movement: approach_pos_2},
-    {stimulus: 'wildlife',    category: "pos", movement: approach_pos_2},
-    {stimulus: 'poverty',     category: "neg", movement: approach_neg_2},
-    {stimulus: 'amputation',  category: "neg", movement: approach_neg_2},
-    {stimulus: 'homicide',    category: "neg", movement: approach_neg_2},
+    {stimulus: 'courage',     category: "pos", movement: move_pos_2},
+/** {stimulus: 'greatness',   category: "pos", movement: move_pos_2},
+    {stimulus: 'wildlife',    category: "pos", movement: move_pos_2},
+    {stimulus: 'poverty',     category: "neg", movement: move_neg_2},
+    {stimulus: 'amputation',  category: "neg", movement: move_neg_2},
+    {stimulus: 'homicide',    category: "neg", movement: move_neg_2}, */
   ];
 
   var vaast_stim_block_2_words = [
-    {stimulus: 'accomplishment',  category: "pos",  movement: approach_pos_2},
-    {stimulus: 'comedy',          category: "pos",  movement: approach_pos_2},
-    {stimulus: 'compassion',      category: "pos",  movement: approach_pos_2},
-    {stimulus: 'delight',         category: "pos",  movement: approach_pos_2},
-    {stimulus: 'enjoyment',       category: "pos",  movement: approach_pos_2},
-    {stimulus: 'excellence',      category: "pos",  movement: approach_pos_2},
-    {stimulus: 'friendship',      category: "pos",  movement: approach_pos_2},
-    {stimulus: 'happiness',       category: "pos",  movement: approach_pos_2},
-    {stimulus: 'harmony',         category: "pos",  movement: approach_pos_2},
-    {stimulus: 'honeymoon',       category: "pos",  movement: approach_pos_2},
-    {stimulus: 'hug',             category: "pos",  movement: approach_pos_2},
-    {stimulus: 'humor',           category: "pos",  movement: approach_pos_2},
-    {stimulus: 'kindness',        category: "pos",  movement: approach_pos_2},
-    {stimulus: 'laughter',        category: "pos",  movement: approach_pos_2},
-    {stimulus: 'liberty',         category: "pos",  movement: approach_pos_2},
-    {stimulus: 'relaxation',      category: "pos",  movement: approach_pos_2},
-    {stimulus: 'sincerity',       category: "pos",  movement: approach_pos_2},
-    {stimulus: 'sunshine',        category: "pos",  movement: approach_pos_2},
-    {stimulus: 'tranquility',     category: "pos",  movement: approach_pos_2},
-    {stimulus: 'victory',         category: "pos",  movement: approach_pos_2},
-    {stimulus: 'alcoholism',      category: "neg",  movement: approach_neg_2},
-    {stimulus: 'assassination',   category: "neg",  movement: approach_neg_2},
-    {stimulus: 'cancer',          category: "neg",  movement: approach_neg_2},
-    {stimulus: 'coma',            category: "neg",  movement: approach_neg_2},
-    {stimulus: 'coward',          category: "neg",  movement: approach_neg_2},
-    {stimulus: 'debt',            category: "neg",  movement: approach_neg_2},
-    {stimulus: 'disaster',        category: "neg",  movement: approach_neg_2},
-    {stimulus: 'discrimination',  category: "neg",  movement: approach_neg_2},
-    {stimulus: 'disease',         category: "neg",  movement: approach_neg_2},
-    {stimulus: 'grief',           category: "neg",  movement: approach_neg_2},
-    {stimulus: 'guilt',           category: "neg",  movement: approach_neg_2},
-    {stimulus: 'illness',         category: "neg",  movement: approach_neg_2},
-    {stimulus: 'injustice',       category: "neg",  movement: approach_neg_2},
-    {stimulus: 'loneliness',      category: "neg",  movement: approach_neg_2},
-    {stimulus: 'massacre',        category: "neg",  movement: approach_neg_2},
-    {stimulus: 'morgue',          category: "neg",  movement: approach_neg_2},
-    {stimulus: 'nightmare',       category: "neg",  movement: approach_neg_2},
-    {stimulus: 'pollution',       category: "neg",  movement: approach_neg_2},
-    {stimulus: 'slavery',         category: "neg",  movement: approach_neg_2},
-    {stimulus: 'toxicity',        category: "neg",  movement: approach_neg_2},
+    {stimulus: 'accomplishment',  category: "pos",  movement: move_pos_2},
+/** {stimulus: 'comedy',          category: "pos",  movement: move_pos_2},
+    {stimulus: 'compassion',      category: "pos",  movement: move_pos_2},
+    {stimulus: 'delight',         category: "pos",  movement: move_pos_2},
+    {stimulus: 'enjoyment',       category: "pos",  movement: move_pos_2},
+    {stimulus: 'excellence',      category: "pos",  movement: move_pos_2},
+    {stimulus: 'friendship',      category: "pos",  movement: move_pos_2},
+    {stimulus: 'happiness',       category: "pos",  movement: move_pos_2},
+    {stimulus: 'harmony',         category: "pos",  movement: move_pos_2},
+    {stimulus: 'honeymoon',       category: "pos",  movement: move_pos_2},
+    {stimulus: 'hug',             category: "pos",  movement: move_pos_2},
+    {stimulus: 'humor',           category: "pos",  movement: move_pos_2},
+    {stimulus: 'kindness',        category: "pos",  movement: move_pos_2},
+    {stimulus: 'laughter',        category: "pos",  movement: move_pos_2},
+    {stimulus: 'liberty',         category: "pos",  movement: move_pos_2},
+    {stimulus: 'relaxation',      category: "pos",  movement: move_pos_2},
+    {stimulus: 'sincerity',       category: "pos",  movement: move_pos_2},
+    {stimulus: 'sunshine',        category: "pos",  movement: move_pos_2},
+    {stimulus: 'tranquility',     category: "pos",  movement: move_pos_2},
+    {stimulus: 'victory',         category: "pos",  movement: move_pos_2},
+    {stimulus: 'alcoholism',      category: "neg",  movement: move_neg_2},
+    {stimulus: 'assassination',   category: "neg",  movement: move_neg_2},
+    {stimulus: 'cancer',          category: "neg",  movement: move_neg_2},
+    {stimulus: 'coma',            category: "neg",  movement: move_neg_2},
+    {stimulus: 'coward',          category: "neg",  movement: move_neg_2},
+    {stimulus: 'debt',            category: "neg",  movement: move_neg_2},
+    {stimulus: 'disaster',        category: "neg",  movement: move_neg_2},
+    {stimulus: 'discrimination',  category: "neg",  movement: move_neg_2},
+    {stimulus: 'disease',         category: "neg",  movement: move_neg_2},
+    {stimulus: 'grief',           category: "neg",  movement: move_neg_2},
+    {stimulus: 'guilt',           category: "neg",  movement: move_neg_2},
+    {stimulus: 'illness',         category: "neg",  movement: move_neg_2},
+    {stimulus: 'injustice',       category: "neg",  movement: move_neg_2},
+    {stimulus: 'loneliness',      category: "neg",  movement: move_neg_2},
+    {stimulus: 'massacre',        category: "neg",  movement: move_neg_2},
+    {stimulus: 'morgue',          category: "neg",  movement: move_neg_2},
+    {stimulus: 'nightmare',       category: "neg",  movement: move_neg_2},
+    {stimulus: 'pollution',       category: "neg",  movement: move_neg_2},
+    {stimulus: 'slavery',         category: "neg",  movement: move_neg_2},
+    {stimulus: 'toxicity',        category: "neg",  movement: move_neg_2},*/
   ];
 
-  // VAAST stimuli sizes -------------------------------------------------------------------
-
+// VAAST stimuli sizes -------------------------------------------------------------------
   var word_sizes = [
     38,
     46,
@@ -350,9 +320,9 @@ var avoidance_key = "B";
   var resize_factor = 7;
   var image_sizes = word_sizes.map(function(x) { return x * resize_factor; });
 
-  // Helper functions ---------------------------------------------------------------------
+// Helper function ---------------------------------------------------------------------
   // next_position():
-  // Compute next position as function of current position and correct movement. Because
+  // Computes next position as function of current position and correct movement. Because
   // participant have to press the correct response key, it always shows the correct
   // position.
   var next_position = function(){
@@ -365,13 +335,13 @@ var avoidance_key = "B";
     }
 
     if(jsPsych.pluginAPI.compareKeys(current_response, avoidance_key)) {
-      position = position -1;
+      position = position - 1;
     }
 
     return(position)
   }
 
-  // Saving blocks ------------------------------------------------------------------------
+// Saving blocks ------------------------------------------------------------------------
   // Every function here send the data to keen.io. Because data sent is different according
   // to trial type, there are differents function definition.
 
@@ -787,7 +757,7 @@ var avoidance_key = "B";
     }
   }
 
-  // VAAST blocs ---------------------------------------------------------------------
+  // VAAST blocks ---------------------------------------------------------------------
 
   var vaast_training_block_1 = {
     timeline: [
@@ -953,7 +923,7 @@ var avoidance_key = "B";
   // Initialize timeline ------------------------------------------------------------------
   var timeline = [];
 
-  /** timeline.push(welcome,
+  timeline.push(welcome,
                 consent,
                 // welcome_2,
                 if_not_enough_time);
@@ -991,7 +961,7 @@ var avoidance_key = "B";
 
   // vaast - end
   timeline.push(fullscreen_trial_exit,
-                showing_cursor); */
+                showing_cursor);
 
  // demographic questions
   timeline.push(extra_information,
