@@ -142,11 +142,6 @@ var avoidance_key = "B";
   var vaast_cond_block_1 = jsPsych.randomization.sampleWithoutReplacement(["app_pos", "app_neg"], 1)[0];
   var vaast_cond_block_2 = vaast_cond_block_1 === "app_pos" ? "app_neg" : "app_pos";
 
-  // prolific variables
-  var prolific_id = jsPsych.data.getURLVariable('PROLIFIC_PID');
-  if(prolific_id == null) 
-    prolific_id = "999";
-
 // VAAST --------------------------------------------------------------------------------
 // VAAST variables ----------------------------------------------------------------------
   const vaast_conditions = {
@@ -203,7 +198,11 @@ var avoidance_key = "B";
 
   //var background = jsPsych.randomization.sampleWithoutReplacement([background_env_eco, background_fv_eco], 1)[0];
 
-  bg_instr = background == background_env_eco ? "media/vaast-background_env_eco.jpg" : "media/vaast-background_fv_eco.jpg";
+  bg_preview = background == background_env_eco ? "media/vaast-background_env_eco.jpg" : "media/vaast-background_fv_eco.jpg";
+
+  var prolific_id = jsPsych.data.getURLVariable('PROLIFIC_PID');
+  if(prolific_id == null) 
+    prolific_id = this.jsPsych.randomization.randomID();
 
 // VAAST stimuli ------------------------------------------------------------------------
   var vaast_stim_training_block_1_words = [
@@ -342,8 +341,8 @@ var avoidance_key = "B";
   }
 
 // Saving blocks ------------------------------------------------------------------------
-  // Every function here send the data to keen.io. Because data sent is different according
-  // to trial type, there are differents function definition.
+  // Every function here sends the data to keen.io. Because data sent is different according
+  // to trial type, there are different function definitions.
 
   // Init ---------------------------------------------------------------------------------
   var saving_id = function(){
@@ -351,77 +350,80 @@ var avoidance_key = "B";
         .ref("participant_id_fondVAAST/")
         .push()
         .set({session_id: session_id,
-          	   prolific_id: prolific_id,
-          	   background: background,
-          	   timestamp: firebase.database.ServerValue.TIMESTAMP,
-               vaast_cond_block_1: vaast_cond_block_1,
-               vaast_cond_block_2: vaast_cond_block_2})
+          prolific_id: prolific_id,
+          background: background,
+          timestamp: firebase.database.ServerValue.TIMESTAMP,
+          vaast_cond_block_1: vaast_cond_block_1,
+          vaast_cond_block_2: vaast_cond_block_2
+        })
   }
 
   // Vaast trial --------------------------------------------------------------------------
   var saving_vaast_trial = function(){
   	database
-  	  .ref("vaast_trial_fondVAAST/").
-      push()
-        .set({session_id: session_id,
-          prolific_id: prolific_id,
-          background: background,
-          timestamp: firebase.database.ServerValue.TIMESTAMP,
-          vaast_cond_block_1: vaast_cond_block_1,
-          vaast_cond_block_2: vaast_cond_block_2,
-          vaast_trial_data: jsPsych.data.get().last(4).json()})
+  	  .ref("vaast_trial_fondVAAST/")
+      .push()
+      .set({session_id: session_id,
+        prolific_id: prolific_id,
+        background: background,
+        timestamp: firebase.database.ServerValue.TIMESTAMP,
+        vaast_cond_block_1: vaast_cond_block_1,
+        vaast_cond_block_2: vaast_cond_block_2,
+        vaast_trial_data: jsPsych.data.get().last(4).json()
+      })
   }
 
   var saving_extra = function() {
   	database
-  	 .ref("extra_info_fondVAAST/")
-     .push()
-  	 .set({session_id: session_id,
-  	 	   prolific_id: prolific_id,
-  	 	   background: background,
-         timestamp: firebase.database.ServerValue.TIMESTAMP,
-         vaast_cond_block_1: vaast_cond_block_1,
-         vaast_cond_block_2: vaast_cond_block_2,
-         extra_data: jsPsych.data.get().last(7).json(),
-        })
+  	  .ref("extra_info_fondVAAST/")
+      .push()
+  	  .set({session_id: session_id,
+  	 	  prolific_id: prolific_id,
+  	 	  background: background,
+        timestamp: firebase.database.ServerValue.TIMESTAMP,
+        vaast_cond_block_1: vaast_cond_block_1,
+        vaast_cond_block_2: vaast_cond_block_2,
+        extra_data: jsPsych.data.get().last(7).json(),
+      })
   }
 
   var saving_browser_events = function(completion) {
   	database
-  	 .ref("browser_event_fondVAAST/")
-     .push()
-  	 .set({session_id: session_id,
-  	 	   prolific_id: prolific_id,
-  	 	   background: background,
-         timestamp: firebase.database.ServerValue.TIMESTAMP,
-         vaast_cond_block_1: vaast_cond_block_1,
-         vaast_cond_block_2: vaast_cond_block_2,
-      completion: completion,
-      event_data: jsPsych.data.getInteractionData().json()})
+  	  .ref("browser_event_fondVAAST/")
+      .push()
+  	  .set({session_id: session_id,
+  	  	prolific_id: prolific_id,
+  	  	background: background,
+        timestamp: firebase.database.ServerValue.TIMESTAMP,
+        vaast_cond_block_1: vaast_cond_block_1,
+        vaast_cond_block_2: vaast_cond_block_2,
+        completion: completion,
+        event_data: jsPsych.data.getInteractionData().json()
+      })
   }
 
 // Attentional check logging ------------------------------------------------------------
   var saving_attention = function() {
     database
-     .ref("attention_info_fondVAAST/")
-     .push()
-     .set({session_id: session_id,
-         prolific_id: prolific_id,
-         background: background,
-         timestamp: firebase.database.ServerValue.TIMESTAMP,
-         attention_data: jsPsych.data.get().last(1).json(),
-        })
+      .ref("attention_info_fondVAAST/")
+      .push()
+      .set({session_id: session_id,
+        prolific_id: prolific_id,
+        background: background,
+        timestamp: firebase.database.ServerValue.TIMESTAMP,
+        attention_data: jsPsych.data.get().last(1).json(),
+      })
   }
 
   // Saving blocks ------------------------------------------------------------------------
   var save_id = {
-      type: jsPsychCallFunction,
-      func: saving_id
+    type: jsPsychCallFunction,
+    func: saving_id
   }
 
   var save_vaast_trial = {
-      type: jsPsychCallFunction,
-      func: saving_vaast_trial
+    type: jsPsychCallFunction,
+    func: saving_vaast_trial
   }
 
   var save_attention = {
@@ -430,8 +432,8 @@ var avoidance_key = "B";
   }
 
   var save_extra = {
-      type: jsPsychCallFunction,
-      func: saving_extra
+    type: jsPsychCallFunction,
+    func: saving_extra
   }
 
   // iat sampling function ----------------------------------------------------------------
@@ -491,31 +493,31 @@ var avoidance_key = "B";
   };
 
   var not_enough_time_to_complete = {
-      type: jsPsychHtmlButtonResponse,
-      stimulus: '<p>Please come back later to take part in this experiment.</p>',
-      choices: ['Go back to Prolific Academic'],
+    type: jsPsychHtmlButtonResponse,
+    stimulus: '<p>Please come back later to take part in this experiment.</p>',
+    choices: ['Go back to Prolific Academic'],
   };
 
   var redirect_to_prolific = {
-      type: jsPsychCallFunction,
-      func: function() {
-          window.location.href = "https://www.prolific.ac/";
-          jsPsych.pauseExperiment();
-      }
+    type: jsPsychCallFunction,
+    func: function() {
+      window.location.href = "https://www.prolific.ac/";
+      jsPsych.pauseExperiment();
+    }
   }
 
   var if_not_enough_time = {
-      timeline: [not_enough_time_to_complete, redirect_to_prolific],
-      conditional_function: function(){
-          // get the data from the previous trial,
-          // and check which key was pressed
-          var data = jsPsych.data.getLastTrialData().values()[0].button_pressed;
-          if(data == 1){
-              return true;
-          } else {
-              return false;
-          }
+    timeline: [not_enough_time_to_complete, redirect_to_prolific],
+    conditional_function: function(){
+      // get the data from the previous trial,
+      // and check which key was pressed
+      var data = jsPsych.data.getLastTrialData().values()[0].response;
+      if(data == 1){ // participant says they don't have enough time
+        return true;
+      } else { // participant says they have enough time
+        return false;
       }
+    }
   }
 
   // Switching to fullscreen --------------------------------------------------------------
@@ -526,24 +528,22 @@ var avoidance_key = "B";
     fullscreen_mode: true
   }
 
-  // Initial instructions -----------------------------------------------------------------
   // First slide --------------------------------------------------------------------------
   var instructions = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: "<p class='instructions'>You are now about to start the study. "+
-    "<br><br>"+
-    "In this study, you will engage in a categorization task divided into two sections. " +
-    "<p class='instructions'>Note that your complete attention is critical for this task " +
-    "(to ensure this, we may have added attentional check during the experiment)." +
-    "<br>Note also that we monitor the time spent during the experiment and that " +
-    "we will not accept submission for which the time to complete the study is unrealistic " +
-    "or for which the attentional check is not successfully completed.</p>" +
-    "<p class = 'continue-instructions'>Press <strong>space</strong> to start.</p>",
+      "<br><br>"+
+      "In this study, you will engage in a categorization task divided into two sections. " +
+      "<p class='instructions'>Note that your complete attention is critical for this task " +
+      "(to ensure this, we may have added attentional check during the experiment)." +
+      "<br>Note also that we monitor the time spent during the experiment and that " +
+      "we will not accept submission for which the time to complete the study is unrealistic " +
+      "or for which the attentional check is not successfully completed.</p>" +
+      "<p class = 'continue-instructions'>Press <strong>space</strong> to start.</p>",
     choices: [' ']
   };
 
   // VAAST instructions -------------------------------------------------------------------
-
   var vaast_instructions_1 = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus:
@@ -551,21 +551,21 @@ var avoidance_key = "B";
       "<p class='instructions'>In this task, like in a video game, you will see an environment " +
       "(presented below) in which you will be able to move forward or backward.</p>" +
       "<p class='instructions'><center>" +
-        "<img src = '"+bg_instr+"'>" +
+        "<img src = '" + bg_preview + "'/>" +
       "</center></p>" +
       "<p class = 'continue-instructions'>Press <strong>space</strong> to continue.</p>",
     choices: [' ']
   };
 
   var attention_check = {
-  type: jsPsychSurveyText,
-  data: {trial: "attention_check"},
-  preamble: "<p class ='instructions'>When asked for your favorite color, please enter the word baguette in the box below.</p>",
-  questions: [{
-    prompt: "<p class='instructions'>Based on the text above, what is your favorite color?</p>"
-  }],
-  button_label: "Submit",
-};
+    type: jsPsychSurveyText,
+    data: {trial: "attention_check"},
+    preamble: "<p class ='instructions'>When asked for your favorite color, please enter the word baguette in the box below.</p>",
+    questions: [{
+      prompt: "<p class='instructions'>Based on the text above, what is your favorite color?</p>"
+    }],
+    button_label: "Submit",
+  };
 
   var vaast_instructions_2 = {
     type: jsPsychHtmlKeyboardResponse,
@@ -576,7 +576,7 @@ var avoidance_key = "B";
       "<p class='instructions'> To move forward or backward, you will use the following keys " +
       "of your keyboard:</p>" +
       "<p class='instructions'><center>" +
-      "<img src = 'media/keyboard-vaast-tgb3.png'>" +
+      "<img src = 'media/keyboard-vaast-tgb3.png'/>" +
       "</center></p>" +
       "<p class = 'continue-instructions'>Press <strong>space</strong> to continue.</p>",
     choices: [' ']
@@ -598,34 +598,34 @@ var avoidance_key = "B";
   };
 
   var vaast_instructions_training_block_1 = {
-      type: jsPsychHtmlKeyboardResponse,
-      stimulus:
-        "<h1 class ='custom-title'>Video Game Task: Section 1</h1>" +
-        "<p class='instructions'><center><strong>INSTRUCTION FOR THIS FIRST SECTION</strong></center></p>" +
-        "<p class='instructions'>In this section, you have to:</p>" +
-         "<ul class='instructions'>" +
-          "<li><strong>APPROACH " + stim_to_approach_1 + " by pressing the MOVE FORWARD key <br>(i.e., the " + approach_key + " key)</strong></li>" +
-          "<li><strong>AVOID " + stim_to_avoid_1 + " by pressing the MOVE BACKWARD key <br>(i.e., the " + avoidance_key + " key)</strong></li>" +
-         "</ul>" +
-        "<p class='instructions'>You will start with a training phase.</p>" +
-        "<p class='instructions'><u>WARNING:</u> we will report your errors ONLY during the training phase, so " +
-        "it is important that you read carefully and memorize the instructions above.</p>" +
-        "<p class='continue-instructions'>Press <strong>space</strong> to continue.</p>",
-      choices: [' ']
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus:
+      "<h1 class ='custom-title'>Video Game Task: Section 1</h1>" +
+      "<p class='instructions'><center><strong>INSTRUCTION FOR THIS FIRST SECTION</strong></center></p>" +
+      "<p class='instructions'>In this section, you have to:</p>" +
+       "<ul class='instructions'>" +
+        "<li><strong>APPROACH " + stim_to_approach_1 + " by pressing the MOVE FORWARD key <br>(i.e., the " + approach_key + " key)</strong></li>" +
+        "<li><strong>AVOID " + stim_to_avoid_1 + " by pressing the MOVE BACKWARD key <br>(i.e., the " + avoidance_key + " key)</strong></li>" +
+       "</ul>" +
+      "<p class='instructions'>You will start with a training phase.</p>" +
+      "<p class='instructions'><u>WARNING:</u> we will report your errors ONLY during the training phase, so " +
+      "it is important that you read carefully and memorize the instructions above.</p>" +
+      "<p class='continue-instructions'>Press <strong>space</strong> to continue.</p>",
+    choices: [' ']
   };
 
   var vaast_instructions_test_block_1 = {
-      type: jsPsychHtmlKeyboardResponse,
-      stimulus:
-        "<h1 class ='custom-title'>Video Game Task: Section 1</h1>" +
-        "<p class='instructions'>The training phase is now over.</p>" +
-        "<p class='instructions'><u>WARNING:</u> you will no longer have a message to report your errors.</p>" +
-        "<p class='instructions'>As a reminder, you have to:</p>" +
-         "<ul class='instructions'>" +
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus:
+      "<h1 class ='custom-title'>Video Game Task: Section 1</h1>" +
+      "<p class='instructions'>The training phase is now over.</p>" +
+      "<p class='instructions'><u>WARNING:</u> you will no longer have a message to report your errors.</p>" +
+      "<p class='instructions'>As a reminder, you have to:</p>" +
+        "<ul class='instructions'>" +
           "<li><strong>APPROACH " + stim_to_approach_1 + " by pressing the MOVE FORWARD key <br>(i.e., the " + approach_key + " key)</strong></li>" +
           "<li><strong>AVOID " + stim_to_avoid_1 + " by pressing the MOVE BACKWARD key <br>(i.e., the " + avoidance_key + " key)</strong></li>" +
-         "</ul>" +
-        "<p class='continue-instructions'>Press <strong>space</strong> to continue.</p>",
+        "</ul>" +
+      "<p class='continue-instructions'>Press <strong>space</strong> to continue.</p>",
     choices: [' ']
   };
 
@@ -635,10 +635,10 @@ var avoidance_key = "B";
       "<h1 class ='custom-title'>Video Game Task: Section 2</h1>" +
       "<p class='instructions'><center><strong>INSTRUCTION FOR THIS SECOND SECTION</strong></center></p>" +
       "<p class='instructions'>In this section, you have to:</p>" +
-       "<ul class='instructions'>" +
-        "<li><strong>APPROACH " + stim_to_approach_2 + " by pressing the MOVE FORWARD key <br>(i.e., the " + approach_key + " key)</strong></li>" +
-        "<li><strong>AVOID " + stim_to_avoid_2 + " by pressing the MOVE BACKWARD key <br>(i.e., the " + avoidance_key + " key)</strong></li>" +
-       "</ul>" +
+        "<ul class='instructions'>" +
+          "<li><strong>APPROACH " + stim_to_approach_2 + " by pressing the MOVE FORWARD key <br>(i.e., the " + approach_key + " key)</strong></li>" +
+          "<li><strong>AVOID " + stim_to_avoid_2 + " by pressing the MOVE BACKWARD key <br>(i.e., the " + avoidance_key + " key)</strong></li>" +
+        "</ul>" +
       "<p class='instructions'>You will start with a training phase.</p>" +
       "<p class='instructions'><u>WARNING:</u> we will report your errors ONLY during the training phase, so " +
       "it is important that you read carefully and memorize the instructions above.</p>" +
@@ -647,17 +647,17 @@ var avoidance_key = "B";
   };
 
   var vaast_instructions_test_block_2 = {
-      type: jsPsychHtmlKeyboardResponse,
-      stimulus:
-        "<h1 class ='custom-title'>Video Game Task: Section 2</h1>" +
-        "<p class='instructions'>The training phase is now over.</p>" +
-        "<p class='instructions'><u>WARNING:</u> you will no longer have a message to report your errors.</p>" +
-        "<p class='instructions'>As a reminder, you have to:</p>" +
-         "<ul class='instructions'>" +
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus:
+      "<h1 class ='custom-title'>Video Game Task: Section 2</h1>" +
+      "<p class='instructions'>The training phase is now over.</p>" +
+      "<p class='instructions'><u>WARNING:</u> you will no longer have a message to report your errors.</p>" +
+      "<p class='instructions'>As a reminder, you have to:</p>" +
+        "<ul class='instructions'>" +
           "<li><strong>APPROACH " + stim_to_approach_2 + " by pressing the MOVE FORWARD key <br>(i.e., the " + approach_key + " key)</strong></li>" +
           "<li><strong>AVOID " + stim_to_avoid_2 + " by pressing the MOVE BACKWARD key <br>(i.e., the " + avoidance_key + " key)</strong></li>" +
-         "</ul>" +
-        "<p class='continue-instructions'>Press <strong>space</strong> to continue.</p>",
+        "</ul>" +
+      "<p class='continue-instructions'>Press <strong>space</strong> to continue.</p>",
     choices: [' ']
   };
 
@@ -682,7 +682,7 @@ var avoidance_key = "B";
   };
 
 
-  // Creating a trial ---------------------------------------------------------------------
+  // VAAST trials ---------------------------------------------------------------------
   
   var vaast_start = {
     type: jsPsychVaastText,
@@ -748,8 +748,7 @@ var avoidance_key = "B";
     trial_duration: 500
   }
 
-  var vaast_second_train_1 = {
-    chunk_type: "if",
+  var vaast_second_step_train_1 = {
     timeline: [vaast_second_step_1],
     conditional_function: function(){
       var data = jsPsych.data.getLastTrialData().values()[0];
@@ -764,7 +763,7 @@ var avoidance_key = "B";
     	vaast_start, 
     	vaast_fixation, 
     	vaast_first_step_train_1, 
-    	vaast_second_train_1, 
+    	vaast_second_step_train_1, 
     	save_vaast_trial
     ],
     timeline_variables: vaast_stim_training_block_1_words,
@@ -790,7 +789,7 @@ var avoidance_key = "B";
     	vaast_start, 
     	vaast_fixation, 
     	vaast_first_step_train_1, 
-    	vaast_second_train_1, 
+    	vaast_second_step_train_1, 
     	save_vaast_trial
     ],
     timeline_variables: vaast_stim_training_block_2_words,
@@ -831,14 +830,14 @@ var avoidance_key = "B";
   var extra_information_2 = {
     timeline: [{
       type: jsPsychSurveyText,
-      questions: [{prompt: "What is your age?", required: true, name: "age"}],
+      questions: [{prompt: "What is your age?", 
+                   required: true}],
       button_label: "Submit",
     }],
     loop_function: function(data) {
       var trial_data = data.values()[0];
       var age = "";
 
-      // Pour jsPsychSurveyText, la réponse est un objet {age: "valeur"}
       if (trial_data.response && trial_data.response.age !== undefined) {
         age = trial_data.response.age.trim();
       }
@@ -852,21 +851,23 @@ var avoidance_key = "B";
     },
     on_finish: function(data) {
       jsPsych.data.addProperties({
-        extra_information_2: data.responses,
+        extra_information_2: data.response,
       });
     }
   }
 
   var extra_information_3 = {
     type: jsPsychSurveyMultiChoice,
-    questions: [{prompt: "What is your sex?", options: ["&nbspMale", "&nbspFemale", "&nbspOther"], required: true, horizontal: true}],
+    questions: [{prompt: "What is your sex?", 
+                 options: ["&nbspMale", "&nbspFemale", "&nbspOther"], 
+                 required: true, horizontal: true}],
     button_label: "Submit"
   }
 
   var extra_information_4 = {
     type: jsPsychSurveyMultiChoice,
-    questions: [{prompt: "How well do you speak english?",
-                 options: ["&nbspFluently", "&nbspVery good", "&nbspGood", "&nbspAverage", "&nbspBad", "&nbspVery bad"],
+    questions: [{prompt: "How well do you speak English?",
+                 options: ["&nbspFluently", "&nbspVery well", "&nbspWell", "&nbspAverage", "&nbspBad", "&nbspVery bad"],
                  required: true, horizontal: false}],
     button_label: "Submit"
   }
@@ -893,7 +894,7 @@ var avoidance_key = "B";
     button_label: "Submit"
   }
 
-  // End instruction ---------------------------------------------------------------------
+  // End instructions ---------------------------------------------------------------------
 
   var ending = {
     type: jsPsychHtmlKeyboardResponse,
@@ -925,7 +926,7 @@ var avoidance_key = "B";
 
   timeline.push(welcome,
                 consent,
-                // welcome_2,
+                welcome_2,
                 if_not_enough_time);
 
   // prolific verification
