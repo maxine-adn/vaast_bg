@@ -118,22 +118,20 @@ var approach_key  = "T";
 var avoidance_key = "B";
 
 // Cursor helper functions -------------------------------------------------------------
-  var hide_cursor = function() {
-    document.querySelector('head').insertAdjacentHTML('beforeend', '<style id="cursor-toggle"> html { cursor: none; } </style>');
-  }
-
-  var show_cursor = function() {
-    document.querySelector('#cursor-toggle').remove();
-  }
-
   var hiding_cursor = {
     type: jsPsychCallFunction,
-    func: hide_cursor
+    func: function() {
+      // document.querySelector('head').insertAdjacentHTML('beforeend', '<style id="cursor-toggle"> html { cursor: none; } </style>');
+      document.body.style.cursor= "none";
+    }
   }
 
   var showing_cursor = {
     type: jsPsychCallFunction,
-    func: show_cursor
+    func: function() {
+      // document.querySelector('#cursor-toggle').remove();
+      document.body.style.cursor= "auto";
+    }
   }
 
 // Variable input -----------------------------------------------------------------------
@@ -324,7 +322,7 @@ var avoidance_key = "B";
   // Computes next position as function of current position and correct movement. Because
   // participant have to press the correct response key, it always shows the correct
   // position.
-  var next_position = function(){
+  var next_position = function() {
     var current_position = jsPsych.data.getLastTrialData().values()[0].position;
     var current_response = jsPsych.data.getLastTrialData().values()[0].key_press;
     var position = current_position;
@@ -345,7 +343,7 @@ var avoidance_key = "B";
   // to trial type, there are different function definitions.
 
   // Init ---------------------------------------------------------------------------------
-  var saving_id = function(){
+  var saving_id = function() {
     database
         .ref("participant_id_fondVAAST/")
         .push()
@@ -359,7 +357,7 @@ var avoidance_key = "B";
   }
 
   // Vaast trial --------------------------------------------------------------------------
-  var saving_vaast_trial = function(){
+  var saving_vaast_trial = function() {
   	database
   	  .ref("vaast_trial_fondVAAST/")
       .push()
@@ -508,7 +506,7 @@ var avoidance_key = "B";
 
   var if_not_enough_time = {
     timeline: [not_enough_time_to_complete, redirect_to_prolific],
-    conditional_function: function(){
+    conditional_function: function() {
       // get the data from the previous trial,
       // and check which key was pressed
       var data = jsPsych.data.getLastTrialData().values()[0].response;
@@ -706,7 +704,7 @@ var avoidance_key = "B";
     background_images: background
   }
   
-  var vaast_first_step_train_1 = {
+  var vaast_first_step_train = {
     type: jsPsychVaastText,
     stimulus: jsPsych.timelineVariable('stimulus'),
     position: 1,
@@ -722,7 +720,7 @@ var avoidance_key = "B";
     response_ends_trial: true
   }
 
-  var vaast_first_step_1 = {
+  var vaast_first_step = {
     type: jsPsychVaastText,
     stimulus: jsPsych.timelineVariable('stimulus'),
     position: 1,
@@ -737,7 +735,7 @@ var avoidance_key = "B";
     response_ends_trial: true
   }
 
-  var vaast_second_step_1 = {
+  var vaast_second_step = {
     type: jsPsychVaastText,
     position: next_position,
     stimulus: jsPsych.timelineVariable('stimulus'),
@@ -748,9 +746,9 @@ var avoidance_key = "B";
     trial_duration: 500
   }
 
-  var vaast_second_step_train_1 = {
-    timeline: [vaast_second_step_1],
-    conditional_function: function(){
+  var vaast_second_step_train = {
+    timeline: [vaast_second_step],
+    conditional_function: function() {
       var data = jsPsych.data.getLastTrialData().values()[0];
       return data.correct;
     }
@@ -762,8 +760,8 @@ var avoidance_key = "B";
     timeline: [
     	vaast_start, 
     	vaast_fixation, 
-    	vaast_first_step_train_1, 
-    	vaast_second_step_train_1, 
+    	vaast_first_step_train, 
+    	vaast_second_step_train, 
     	save_vaast_trial
     ],
     timeline_variables: vaast_stim_training_block_1_words,
@@ -775,8 +773,8 @@ var avoidance_key = "B";
     timeline: [
     	vaast_start, 
     	vaast_fixation, 
-    	vaast_first_step_1, 
-    	vaast_second_step_1, 
+    	vaast_first_step, 
+    	vaast_second_step, 
     	save_vaast_trial
     ],
     timeline_variables: vaast_stim_block_1_words,
@@ -788,8 +786,8 @@ var avoidance_key = "B";
     timeline: [
     	vaast_start, 
     	vaast_fixation, 
-    	vaast_first_step_train_1, 
-    	vaast_second_step_train_1, 
+    	vaast_first_step_train, 
+    	vaast_second_step_train, 
     	save_vaast_trial
     ],
     timeline_variables: vaast_stim_training_block_2_words,
@@ -801,8 +799,8 @@ var avoidance_key = "B";
     timeline: [
     	vaast_start, 
     	vaast_fixation, 
-    	vaast_first_step_1, 
-    	vaast_second_step_1, 
+    	vaast_first_step, 
+    	vaast_second_step, 
     	save_vaast_trial
     ],
     timeline_variables: vaast_stim_block_2_words,
@@ -831,11 +829,12 @@ var avoidance_key = "B";
     timeline: [{
       type: jsPsychSurveyText,
       questions: [{prompt: "What is your age?", 
-                   required: true}],
+                   required: true, 
+                   name : "age"}],
       button_label: "Submit",
     }],
     loop_function: function(data) {
-      var trial_data = data.values()[0];
+      var trial_data = jsPsych.data.getLastTrialData().values()[0];
       var age = "";
 
       if (trial_data.response && trial_data.response.age !== undefined) {
