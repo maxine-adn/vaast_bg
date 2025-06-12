@@ -105,9 +105,6 @@ jsPsych.plugins["keen-ping"] = (function() {
     // function to end trial when it is time
     var end_trial = function() {
 
-      // kill any remaining setTimeout handlers
-      jsPsych.pluginAPI.clearAllTimeouts();
-
       // kill keyboard listeners
       if (typeof keyboardListener !== 'undefined') {
         jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
@@ -116,9 +113,6 @@ jsPsych.plugins["keen-ping"] = (function() {
       // gather the data to store for the trial
       var trial_data = {
       };
-
-      // clear the display
-      display_element.innerHTML = '';
 
       // move on to the next trial
       jsPsych.finishTrial(trial_data);

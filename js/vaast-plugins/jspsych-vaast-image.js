@@ -162,9 +162,6 @@ var jsPsychVaastImage = (function(jspsych) {
       // function to end trial when it is time
       const end_trial = () => {
 
-        // kill any remaining setTimeout handlers
-        jsPsych.pluginAPI.clearAllTimeouts();
-
         // kill keyboard listeners
         if (typeof keyboardListener !== 'undefined') {
           jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
@@ -179,9 +176,6 @@ var jsPsychVaastImage = (function(jspsych) {
           "movement": trial.stim_movement,
           "position": trial.position
         };
-
-        // clears the display
-        display_element.innerHTML = '';
 
         // move on to the next trial
         jsPsych.finishTrial(trial_data);

@@ -79,9 +79,6 @@ var jsPsychVaastFixation = (function(jspsych) {
           duration: trialDuration,
         };
   
-        // clears the display
-        display_element.innerHTML = '';
-  
         // move on to the next trial
         jsPsych.finishTrial(trial_data);
       };
@@ -90,7 +87,6 @@ var jsPsychVaastFixation = (function(jspsych) {
       jsPsych.pluginAPI.setTimeout(function() {
         end_trial();
       }, trialDuration);
-      
     };
   }
   VaastFixationPlugin.info = info;
