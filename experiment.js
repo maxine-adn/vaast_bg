@@ -1,103 +1,90 @@
 // LICENCE -----------------------------------------------------------------------------
-  //
-  // Copyright 2018 - Cédric Batailler
-  //
-  // Permission is hereby granted, free of charge, to any person obtaining a copy of this
-  // software and associated documentation files (the "Software"), to deal in the Software
-  // without restriction, including without limitation the rights to use, copy, modify,
-  // merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
-  // permit persons to whom the Software is furnished to do so, subject to the following
-  // conditions:
-  //
-  // The above copyright notice and this permission notice shall be included in all copies
-  // or substantial portions of the Software.
-  //
-  // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-  // INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-  // PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-  // HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
-  // CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
-  // OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-  //
-  // OVERVIEW -----------------------------------------------------------------------------
-  //
-  // TODO:
-  //
-  // Safari exclusion ---------------------------------------------------------------------
-  var is_safari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-  var is_ie = /*@cc_on!@*/false || !!document.documentMode;
+//
+// Copyright 2018 - Cédric Batailler
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this
+// software and associated documentation files (the "Software"), to deal in the Software
+// without restriction, including without limitation the rights to use, copy, modify,
+// merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+// permit persons to whom the Software is furnished to do so, subject to the following
+// conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies
+// or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+// INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+// PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+// CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+// OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+// --------------------------------------------------------------------------------------
 
-  var is_compatible = !(is_safari || is_ie);
-
-
-  if(!is_compatible) {
-
-      var exclusion = {
-        type: jsPsychBrowserCheck,
-        features : ["browser", "mobile"],
-        inclusion_function: (data) => {
-          return (data.browser == 'chrome'  || data.browser == 'firefox') && data.mobile === false
-        },
-        exclusion_message: (data) => {
-          if(data.mobile){
-            return '<p>You must use a desktop/laptop computer to participate in this experiment.</p>';
-          } else {
-            return '<p>Unfortunately, this study is not compatible with your browser.</p>' +
-              '<p>Please reopen this experiment from a supported browser (like Chrome or Firefox).</p>'
-          }
-        }
-      };
-
-      var timeline_exclusion = [];
-
-      timeline_exclusion.push(exclusion);
-      var jsPsych = initJsPsych(); // no parameter
-      jsPsych.run(timeline_exclusion);
-
-  } else {
-
-    var jsPsych = initJsPsych({
-      on_interaction_data_update: function() {
-        saving_browser_events(completion = false);
-      },
-      on_finish: function() {
-        saving_browser_events(completion = true);
-        window.location.href = "https://app.prolific.com/submissions/complete?cc=C3FXL022";
+// Safari exclusion ---------------------------------------------------------------------
+const is_safari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+const is_ie = /*@cc_on!@*/false || !!document.documentMode;
+const is_compatible = !(is_safari || is_ie);
+if(!is_compatible) {
+  const exclusion = {
+    type: jsPsychBrowserCheck,
+    features : ["browser", "mobile"],
+    inclusion_function: (data) => {
+      return (data.browser == 'chrome'  || data.browser == 'firefox') && data.mobile === false
+    },
+    exclusion_message: (data) => {
+      if(data.mobile){
+        return '<p>You must use a desktop/laptop computer to participate in this experiment.</p>';
+      } else {
+        return '<p>Unfortunately, this study is not compatible with your browser.</p>' +
+          '<p>Please reopen this experiment from a supported browser (like Chrome or Firefox).</p>'
       }
-    });
-  }
+    }
+  };
+
+  const timeline_exclusion = [];
+  timeline_exclusion.push(exclusion);
+  const jsPsych = initJsPsych(); // no parameter
+  jsPsych.run(timeline_exclusion);
+
+} else {
+  var jsPsych = initJsPsych({
+    on_interaction_data_update: function() {
+      saving_browser_events(completion = false);
+    },
+    on_finish: function() {
+      saving_browser_events(completion = true);
+      window.location.href = "https://app.prolific.com/submissions/complete?cc=C3FXL022";
+    }
+  });
 
   // Firebase initialization ---------------------------------------------------------------
-  var firebase_config = {
+  const firebase_config = {
     apiKey: "AIzaSyAPTEPrT8V9T1-GouWXnW6jknK3brmagJs",
     databaseURL: "https://postdocgent.firebaseio.com/"
   };
-
   firebase.initializeApp(firebase_config);
-  var database = firebase.database();
-  var session_id = this.jsPsych.randomization.randomID();
-  
+  let database = firebase.database();
+  const session_id = jsPsych.randomization.randomID();
+
   // Connection status ---------------------------------------------------------------------
   // This section ensure that we don't lose data. Anytime the 
   // client is disconnected, an alert appears onscreen
-  var connectedRef = firebase.database().ref(".info/connected");
-  var connection   = firebase.database().ref("connection/" + session_id + "/")
-  var dialog = undefined;
-  var first_connection = true;
-
+  const connectedRef = firebase.database().ref(".info/connected");
+  const connection   = firebase.database().ref("connection/" + session_id + "/")
+  let dialog = undefined;
+  let first_connection = true;
   connectedRef.on("value", function(snap) {
     if(snap.val() === true) {
       connection
         .push()
         .set({status: "connection",
               timestamp: firebase.database.ServerValue.TIMESTAMP})
-
       connection
         .push()
         .onDisconnect()
         .set({status: "disconnection",
               timestamp: firebase.database.ServerValue.TIMESTAMP})
-
     if(!first_connection) {
       dialog.modal('hide');
     }
@@ -113,35 +100,31 @@
     }
   });
 
-// Global variables:
-var approach_key  = "T";
-var avoidance_key = "B";
+  // Global variables:
+  const approach_key  = "T";
+  const avoidance_key = "B";
 
-// Cursor helper functions -------------------------------------------------------------
-  var hiding_cursor = {
+  // Cursor helper functions -------------------------------------------------------------
+  const hiding_cursor = {
     type: jsPsychCallFunction,
     func: function() {
-      // document.querySelector('head').insertAdjacentHTML('beforeend', '<style id="cursor-toggle"> html { cursor: none; } </style>');
       document.body.style.cursor= "none";
     }
   }
 
-  var showing_cursor = {
+  const showing_cursor = {
     type: jsPsychCallFunction,
     func: function() {
-      // document.querySelector('#cursor-toggle').remove();
       document.body.style.cursor= "auto";
     }
   }
 
-// Variable input -----------------------------------------------------------------------
-// Variable used to define the experimental conditions
+  // VAAST --------------------------------------------------------------------------------
+  // Variables used to define the experimental conditions
+  const vaast_cond_block_1 = jsPsych.randomization.sampleWithoutReplacement(["app_pos", "app_neg"], 1)[0];
+  const vaast_cond_block_2 = vaast_cond_block_1 === "app_pos" ? "app_neg" : "app_pos";
 
-  var vaast_cond_block_1 = jsPsych.randomization.sampleWithoutReplacement(["app_pos", "app_neg"], 1)[0];
-  var vaast_cond_block_2 = vaast_cond_block_1 === "app_pos" ? "app_neg" : "app_pos";
-
-// VAAST --------------------------------------------------------------------------------
-// VAAST variables ----------------------------------------------------------------------
+  // VAAST variables ----------------------------------------------------------------------
   const vaast_conditions = {
     app_pos: {
       move_pos: "approach",
@@ -160,61 +143,61 @@ var avoidance_key = "B";
   const cond1 = vaast_conditions[vaast_cond_block_1];
   const cond2 = vaast_conditions[vaast_cond_block_2];
 
-  var move_pos_1 = cond1.move_pos;
-  var move_neg_1 = cond1.move_neg;
-  var stim_to_approach_1 = cond1.stim_to_approach;
-  var stim_to_avoid_1 = cond1.stim_to_avoid;
+  const move_pos_1 = cond1.move_pos;
+  const move_neg_1 = cond1.move_neg;
+  const stim_to_approach_1 = cond1.stim_to_approach;
+  const stim_to_avoid_1 = cond1.stim_to_avoid;
 
-  var move_pos_2 = cond2.move_pos;
-  var move_neg_2 = cond2.move_neg;
-  var stim_to_approach_2 = cond2.stim_to_approach;
-  var stim_to_avoid_2 = cond2.stim_to_avoid;  
+  const move_pos_2 = cond2.move_pos;
+  const move_neg_2 = cond2.move_neg;
+  const stim_to_approach_2 = cond2.stim_to_approach;
+  const stim_to_avoid_2 = cond2.stim_to_avoid;  
 
-// VAAST background images --------------------------------------------------------------
+  // VAAST background images --------------------------------------------------------------
   /*
-  var background = [
+  const background = [
     "background/2.jpg",
     "background/4.jpg",
     "background/6.jpg"
   ];
-*/
-  var background_env_eco = [
+  */
+  const background_env_eco = [
     "background/env_eco/2.jpg",
     "background/env_eco/4.jpg",
     "background/env_eco/6.jpg"
   ];
 
-  var background_fv_eco = [
+  const background_fv_eco = [
     "background/fv_eco/2.jpg",
     "background/fv_eco/4.jpg",
     "background/fv_eco/6.jpg"
   ];
 
-// prolific variables
-  var background = jsPsych.data.getURLVariable('background');
+  // prolific variables
+  let background = jsPsych.data.getURLVariable('background');
   if(background == null) {background = jsPsych.randomization.sampleWithoutReplacement([background_env_eco, background_fv_eco], 1)[0];}
 
-  //var background = jsPsych.randomization.sampleWithoutReplacement([background_env_eco, background_fv_eco], 1)[0];
+  //let background = jsPsych.randomization.sampleWithoutReplacement([background_env_eco, background_fv_eco], 1)[0];
 
   bg_preview = background == background_env_eco ? "media/vaast-background_env_eco.jpg" : "media/vaast-background_fv_eco.jpg";
 
-  var prolific_id = jsPsych.data.getURLVariable('PROLIFIC_PID');
+  let prolific_id = jsPsych.data.getURLVariable('PROLIFIC_PID');
   if(prolific_id == null) 
-    prolific_id = this.jsPsych.randomization.randomID();
+    prolific_id = jsPsych.randomization.randomID();
 
-// VAAST stimuli ------------------------------------------------------------------------
-  var vaast_stim_training_block_1_words = [
+  // VAAST stimuli ------------------------------------------------------------------------
+  const vaast_stim_training_block_1_words = [
     {stimulus: 'courage',     category: "pos", movement: move_pos_1},
-/** {stimulus: 'greatness',   category: "pos", movement: move_pos_1},
+  /** {stimulus: 'greatness',   category: "pos", movement: move_pos_1},
     {stimulus: 'wildlife',    category: "pos", movement: move_pos_1},
     {stimulus: 'poverty',     category: "neg", movement: move_neg_1},
     {stimulus: 'amputation',  category: "neg", movement: move_neg_1},
     {stimulus: 'homicide',    category: "neg", movement: move_neg_1}, */
   ];
-  
-  var vaast_stim_block_1_words = [
+
+  const vaast_stim_block_1_words = [
     {stimulus: 'accomplishment',  category: "pos",  movement: move_pos_1},
-/** {stimulus: 'comedy',          category: "pos",  movement: move_pos_1},
+  /* {stimulus: 'comedy',          category: "pos",  movement: move_pos_1},
     {stimulus: 'compassion',      category: "pos",  movement: move_pos_1},
     {stimulus: 'delight',         category: "pos",  movement: move_pos_1},
     {stimulus: 'enjoyment',       category: "pos",  movement: move_pos_1},
@@ -255,16 +238,16 @@ var avoidance_key = "B";
     {stimulus: 'toxicity',        category: "neg",  movement: move_neg_1}, */
   ];
 
-  var vaast_stim_training_block_2_words = [
+  const vaast_stim_training_block_2_words = [
     {stimulus: 'courage',     category: "pos", movement: move_pos_2},
-/** {stimulus: 'greatness',   category: "pos", movement: move_pos_2},
+  /*  {stimulus: 'greatness',   category: "pos", movement: move_pos_2},
     {stimulus: 'wildlife',    category: "pos", movement: move_pos_2},
     {stimulus: 'poverty',     category: "neg", movement: move_neg_2},
     {stimulus: 'amputation',  category: "neg", movement: move_neg_2},
     {stimulus: 'homicide',    category: "neg", movement: move_neg_2}, */
   ];
 
-  var vaast_stim_block_2_words = [
+  const vaast_stim_block_2_words = [
     {stimulus: 'accomplishment',  category: "pos",  movement: move_pos_2},
 /** {stimulus: 'comedy',          category: "pos",  movement: move_pos_2},
     {stimulus: 'compassion',      category: "pos",  movement: move_pos_2},
@@ -307,25 +290,25 @@ var avoidance_key = "B";
     {stimulus: 'toxicity',        category: "neg",  movement: move_neg_2},*/
   ];
 
-// VAAST stimuli sizes -------------------------------------------------------------------
-  var word_sizes = [
+  // VAAST stimuli sizes -------------------------------------------------------------------
+  const word_sizes = [
     38,
     46,
     60
   ];
 
-  var resize_factor = 7;
-  var image_sizes = word_sizes.map(function(x) { return x * resize_factor; });
+  const resize_factor = 7;
+  const image_sizes = word_sizes.map(function(x) { return x * resize_factor; });
 
-// Helper function ---------------------------------------------------------------------
+  // Helper function ---------------------------------------------------------------------
   // next_position():
   // Computes next position as function of current position and correct movement. Because
   // participant have to press the correct response key, it always shows the correct
   // position.
-  var next_position = function() {
-    var current_position = jsPsych.data.getLastTrialData().values()[0].position;
-    var current_response = jsPsych.data.getLastTrialData().values()[0].key_press;
-    var position = current_position;
+  const next_position = function() {
+    const current_position = jsPsych.data.getLastTrialData().values()[0].position;
+    const current_response = jsPsych.data.getLastTrialData().values()[0].key_press;
+    let position = current_position;
 
     if(jsPsych.pluginAPI.compareKeys(current_response, approach_key)) {
       position = position + 1;
@@ -338,12 +321,12 @@ var avoidance_key = "B";
     return(position)
   }
 
-// Saving blocks ------------------------------------------------------------------------
+  // Saving blocks ------------------------------------------------------------------------
   // Every function here sends the data to keen.io. Because data sent is different according
   // to trial type, there are different function definitions.
 
   // Init ---------------------------------------------------------------------------------
-  var saving_id = function() {
+  const saving_id = function() {
     database
         .ref("participant_id_fondVAAST/")
         .push()
@@ -357,7 +340,7 @@ var avoidance_key = "B";
   }
 
   // Vaast trial --------------------------------------------------------------------------
-  var saving_vaast_trial = function() {
+  const saving_vaast_trial = function() {
   	database
   	  .ref("vaast_trial_fondVAAST/")
       .push()
@@ -371,7 +354,7 @@ var avoidance_key = "B";
       })
   }
 
-  var saving_extra = function() {
+  const saving_extra = function() {
   	database
   	  .ref("extra_info_fondVAAST/")
       .push()
@@ -385,7 +368,7 @@ var avoidance_key = "B";
       })
   }
 
-  var saving_browser_events = function(completion) {
+  const saving_browser_events = function(completion) {
   	database
   	  .ref("browser_event_fondVAAST/")
       .push()
@@ -400,8 +383,8 @@ var avoidance_key = "B";
       })
   }
 
-// Attentional check logging ------------------------------------------------------------
-  var saving_attention = function() {
+  // Attentional check logging ------------------------------------------------------------
+  const saving_attention = function() {
     database
       .ref("attention_info_fondVAAST/")
       .push()
@@ -414,38 +397,30 @@ var avoidance_key = "B";
   }
 
   // Saving blocks ------------------------------------------------------------------------
-  var save_id = {
+  const save_id = {
     type: jsPsychCallFunction,
     func: saving_id
   }
 
-  var save_vaast_trial = {
+  const save_vaast_trial = {
     type: jsPsychCallFunction,
     func: saving_vaast_trial
   }
 
-  var save_attention = {
+  const save_attention = {
     type: jsPsychCallFunction,
     func: saving_attention
   }
 
-  var save_extra = {
+  const save_extra = {
     type: jsPsychCallFunction,
     func: saving_extra
-  }
-
-  // iat sampling function ----------------------------------------------------------------
-  var sample_n = function(list, n) {
-    list = jsPsych.randomization.sampleWithReplacement(list, n);
-    list = jsPsych.randomization.shuffleNoRepeats(list);
-
-    return(list);
   }
 
   // EXPERIMENT ---------------------------------------------------------------------------
 
   // Initial instructions -----------------------------------------------------------------
-  var welcome = {
+  const welcome = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus:
       "<h1 class ='custom-title'> Welcome </h1>" +
@@ -464,7 +439,7 @@ var avoidance_key = "B";
     choices: [' ']
   };
 
-  var consent = {
+  const consent = {
     type: jsPsychHtmlButtonResponse,
     stimulus:
     "<h1 class ='custom-title'> Informed consent </h1>" +
@@ -482,7 +457,7 @@ var avoidance_key = "B";
     choices: ['I confirm']
   }
 
-  var welcome_2 = {
+  const welcome_2 = {
     type: jsPsychHtmlButtonResponse,
     stimulus:
       "<p class='instructions'>Before going further, please note that this study should take " +
@@ -490,13 +465,13 @@ var avoidance_key = "B";
     choices: ['I have enough time', 'I do not have enough time'],
   };
 
-  var not_enough_time_to_complete = {
+  const not_enough_time_to_complete = {
     type: jsPsychHtmlButtonResponse,
     stimulus: '<p>Please come back later to take part in this experiment.</p>',
     choices: ['Go back to Prolific Academic'],
   };
 
-  var redirect_to_prolific = {
+  const redirect_to_prolific = {
     type: jsPsychCallFunction,
     func: function() {
       window.location.href = "https://www.prolific.ac/";
@@ -504,13 +479,13 @@ var avoidance_key = "B";
     }
   }
 
-  var if_not_enough_time = {
+  const if_not_enough_time = {
     timeline: [not_enough_time_to_complete, redirect_to_prolific],
     conditional_function: function() {
       // get the data from the previous trial,
       // and check which key was pressed
-      var data = jsPsych.data.getLastTrialData().values()[0].response;
-      if(data == 1){ // participant says they don't have enough time
+      let trial_data = jsPsych.data.getLastTrialData().values()[0].response;
+      if(trial_data == 1){ // participant says they don't have enough time
         return true;
       } else { // participant says they have enough time
         return false;
@@ -519,7 +494,7 @@ var avoidance_key = "B";
   }
 
   // Switching to fullscreen --------------------------------------------------------------
-  var fullscreen_trial = {
+  const fullscreen_trial = {
     type: jsPsychFullscreen,
     message:  '<p>To take part in this study, your browser needs to be set to fullscreen.</p>',
     button_label: 'Switch to fullscreen',
@@ -527,7 +502,7 @@ var avoidance_key = "B";
   }
 
   // First slide --------------------------------------------------------------------------
-  var instructions = {
+  const instructions = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: "<p class='instructions'>You are now about to start the study. "+
       "<br><br>"+
@@ -542,7 +517,7 @@ var avoidance_key = "B";
   };
 
   // VAAST instructions -------------------------------------------------------------------
-  var vaast_instructions_1 = {
+  const vaast_instructions_1 = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus:
       "<h1 class ='custom-title'>Video Game Task</h1>" +
@@ -555,7 +530,7 @@ var avoidance_key = "B";
     choices: [' ']
   };
 
-  var attention_check = {
+  const attention_check = {
     type: jsPsychSurveyText,
     data: {trial: "attention_check"},
     preamble: "<p class ='instructions'>When asked for your favorite color, please enter the word baguette in the box below.</p>",
@@ -565,7 +540,7 @@ var avoidance_key = "B";
     button_label: "Submit",
   };
 
-  var vaast_instructions_2 = {
+  const vaast_instructions_2 = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus:
       "<h1 class ='custom-title'>Video Game Task</h1>" +
@@ -580,7 +555,7 @@ var avoidance_key = "B";
     choices: [' ']
   };
 
-  var vaast_instructions_3 = {
+  const vaast_instructions_3 = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus:
       "<h1 class ='custom-title'>Video Game Task</h1>" +
@@ -595,7 +570,7 @@ var avoidance_key = "B";
     choices: [' ']
   };
 
-  var vaast_instructions_training_block_1 = {
+  const vaast_instructions_training_block_1 = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus:
       "<h1 class ='custom-title'>Video Game Task: Section 1</h1>" +
@@ -612,7 +587,7 @@ var avoidance_key = "B";
     choices: [' ']
   };
 
-  var vaast_instructions_test_block_1 = {
+  const vaast_instructions_test_block_1 = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus:
       "<h1 class ='custom-title'>Video Game Task: Section 1</h1>" +
@@ -627,7 +602,7 @@ var avoidance_key = "B";
     choices: [' ']
   };
 
-  var vaast_instructions_training_block_2 = {
+  const vaast_instructions_training_block_2 = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus:
       "<h1 class ='custom-title'>Video Game Task: Section 2</h1>" +
@@ -644,7 +619,7 @@ var avoidance_key = "B";
     choices: [' ']
   };
 
-  var vaast_instructions_test_block_2 = {
+  const vaast_instructions_test_block_2 = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus:
       "<h1 class ='custom-title'>Video Game Task: Section 2</h1>" +
@@ -659,7 +634,7 @@ var avoidance_key = "B";
     choices: [' ']
   };
 
-  var vaast_instructions_4 = {
+  const vaast_instructions_4 = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus:
       "<p class='instructions'><center>Before you start:</center></p>" +
@@ -670,7 +645,7 @@ var avoidance_key = "B";
     choices: [' ']
   }
 
-  var vaast_instructions_5 = {
+  const vaast_instructions_5 = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus:
       "<p class='instructions'><center><strong>End of this section</strong></center></p>" +
@@ -681,8 +656,7 @@ var avoidance_key = "B";
 
 
   // VAAST trials ---------------------------------------------------------------------
-  
-  var vaast_start = {
+  const vaast_start = {
     type: jsPsychVaastText,
     stimulus: "o",
     position: 1,
@@ -695,16 +669,16 @@ var avoidance_key = "B";
     display_feedback: true,
     response_ends_trial: true
   }
-  
-  var vaast_fixation = {
+
+  const vaast_fixation = {
     type: jsPsychVaastFixation,
     fixation: "+",
     font_size: 46,
     position: 1,
     background_images: background
   }
-  
-  var vaast_first_step_train = {
+
+  const vaast_first_step_train = {
     type: jsPsychVaastText,
     stimulus: jsPsych.timelineVariable('stimulus'),
     position: 1,
@@ -720,7 +694,7 @@ var avoidance_key = "B";
     response_ends_trial: true
   }
 
-  var vaast_first_step = {
+  const vaast_first_step = {
     type: jsPsychVaastText,
     stimulus: jsPsych.timelineVariable('stimulus'),
     position: 1,
@@ -735,7 +709,7 @@ var avoidance_key = "B";
     response_ends_trial: true
   }
 
-  var vaast_second_step = {
+  const vaast_second_step = {
     type: jsPsychVaastText,
     position: next_position,
     stimulus: jsPsych.timelineVariable('stimulus'),
@@ -746,17 +720,16 @@ var avoidance_key = "B";
     trial_duration: 500
   }
 
-  var vaast_second_step_train = {
+  const vaast_second_step_train = {
     timeline: [vaast_second_step],
     conditional_function: function() {
-      var data = jsPsych.data.getLastTrialData().values()[0];
-      return data.correct;
+      let trial_data = jsPsych.data.getLastTrialData().values()[0];
+      return trial_data.correct;
     }
   }
 
   // VAAST blocks ---------------------------------------------------------------------
-
-  var vaast_training_block_1 = {
+  const vaast_training_block_1 = {
     timeline: [
     	vaast_start, 
     	vaast_fixation, 
@@ -769,7 +742,7 @@ var avoidance_key = "B";
     randomize_order: true
   };
 
-  var vaast_test_block_1 = {
+  const vaast_test_block_1 = {
     timeline: [
     	vaast_start, 
     	vaast_fixation, 
@@ -781,8 +754,8 @@ var avoidance_key = "B";
     repetitions: 1,
     randomize_order: true
   };
-  
-  var vaast_training_block_2 = {
+
+  const vaast_training_block_2 = {
     timeline: [
     	vaast_start, 
     	vaast_fixation, 
@@ -795,7 +768,7 @@ var avoidance_key = "B";
     randomize_order: true
   };
 
-  var vaast_test_block_2 = {
+  const vaast_test_block_2 = {
     timeline: [
     	vaast_start, 
     	vaast_fixation, 
@@ -807,17 +780,17 @@ var avoidance_key = "B";
     repetitions: 1,
     randomize_order: true
   };
-  
+
   // End fullscreen -----------------------------------------------------------------------
 
-  var fullscreen_trial_exit = {
+  const fullscreen_trial_exit = {
     type: jsPsychFullscreen,
     fullscreen_mode: false
   }
 
   // Demographic questions -------------------------------------------------------------
 
-  var extra_information = {
+  const extra_information = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus:
       "<p class='instructions'>The study is almost finished. Now, you have to answer a few questions.</p>" +
@@ -825,17 +798,17 @@ var avoidance_key = "B";
     choices: [' ']
   };
 
-  var extra_information_2 = {
+  const extra_information_2 = {
     timeline: [{
       type: jsPsychSurveyText,
       questions: [{prompt: "What is your age?", 
                    required: true, 
-                   name : "age"}],
+                   name: "age"}],
       button_label: "Submit",
     }],
     loop_function: function(data) {
-      var trial_data = jsPsych.data.getLastTrialData().values()[0];
-      var age = "";
+      let trial_data = jsPsych.data.getLastTrialData().values()[0];
+      let age = "";
 
       if (trial_data.response && trial_data.response.age !== undefined) {
         age = trial_data.response.age.trim();
@@ -848,54 +821,59 @@ var avoidance_key = "B";
       }
       return false;
     },
-    on_finish: function(data) {
-      jsPsych.data.addProperties({
-        extra_information_2: data.response,
-      });
-    }
+    // on_finish: function(data) {
+    //   jsPsych.data.addProperties({
+    //     extra_information_2: data.response,
+    //   });
+    // }
   }
 
-  var extra_information_3 = {
+  const extra_information_3 = {
     type: jsPsychSurveyMultiChoice,
     questions: [{prompt: "What is your sex?", 
                  options: ["&nbspMale", "&nbspFemale", "&nbspOther"], 
-                 required: true, horizontal: true}],
+                 required: true, horizontal: true, 
+                 name: "sex"}],
     button_label: "Submit"
   }
 
-  var extra_information_4 = {
+  const extra_information_4 = {
     type: jsPsychSurveyMultiChoice,
     questions: [{prompt: "How well do you speak English?",
                  options: ["&nbspFluently", "&nbspVery well", "&nbspWell", "&nbspAverage", "&nbspBad", "&nbspVery bad"],
-                 required: true, horizontal: false}],
+                 required: true, horizontal: false,
+                 name: "fluency"}],
     button_label: "Submit"
   }
 
-  var extra_information_5 = {
+  const extra_information_5 = {
     type: jsPsychSurveyMultiChoice,
     questions: [{prompt: "What is your socioeconomic status?",
                  options: ["&nbspVery low", "&nbspLow", "&nbspMedium", "&nbspHigh", "&nbspVery high"],
-                 required: true, horizontal: false}],
+                 required: true, horizontal: false, 
+                 name: "socioeconomic status"}],
     button_label: "Submit"
   }
 
-  var extra_information_6 = {
+  const extra_information_6 = {
     type: jsPsychSurveyMultiChoice,
     questions: [{prompt: "What is your highest level of education?",
                  options: ["&nbspDid not complete high school", "&nbspHigh school/GED", "&nbspSome college", "&nbspBachelor's degree", "&nbspMaster's degree", "&nbspAdvanced graduate work or Ph.D."],
-                 required: true, horizontal: false}],
+                 required: true, horizontal: false, 
+                 name: "education"}],
     button_label: "Submit"
   }
 
-  var extra_information_7 = {
+  const extra_information_7 = {
     type: jsPsychSurveyText,
-    questions: [{prompt: "Do you have any remarks about this study? [Optional]"}],
+    questions: [{prompt: "Do you have any remarks about this study? [Optional]",
+                 name: "remarks"}],
     button_label: "Submit"
   }
 
   // End instructions ---------------------------------------------------------------------
 
-  var ending = {
+  const ending = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus:
       "<p class='instructions'>You are now finished with this study.<p>" +
@@ -909,7 +887,7 @@ var avoidance_key = "B";
     choices: [' ']
   };
 
-  var ending_2 = {
+  const ending_2 = {
     type: jsPsychHtmlKeyboardResponse,
     trial_duration: 2000,
     stimulus:
@@ -921,9 +899,10 @@ var avoidance_key = "B";
 
   // Procedure ----------------------------------------------------------------------------
   // Initialize timeline ------------------------------------------------------------------
-  var timeline = [];
+  
+  const timeline = [];
 
-  timeline.push(welcome,
+  /*timeline.push(welcome,
                 consent,
                 welcome_2,
                 if_not_enough_time);
@@ -945,8 +924,8 @@ var avoidance_key = "B";
                 save_attention,
                 hiding_cursor);
 
- // vaast - blocks
- timeline.push(vaast_instructions_training_block_1,
+  // vaast - blocks
+  timeline.push(vaast_instructions_training_block_1,
                 vaast_instructions_4,
                 vaast_training_block_1,
                 vaast_instructions_test_block_1,
@@ -961,9 +940,9 @@ var avoidance_key = "B";
 
   // vaast - end
   timeline.push(fullscreen_trial_exit,
-                showing_cursor);
+                showing_cursor); */
 
- // demographic questions
+  // demographic questions
   timeline.push(extra_information,
                 extra_information_2,
                 extra_information_3,
@@ -981,17 +960,16 @@ var avoidance_key = "B";
   // Preloading. For some reason, it appears auto-preloading fails, so using it manually.
   // In principle, it should have ended when participants starts VAAST procedure (which)
   // contains most of the image that have to be pre-loaded.
-  var loading_gif               = ["media/loading.gif"]
-  var vaast_instructions_images = ["media/vaast-background_env_eco.jpg", "media/vaast-background_fv_eco.jpg", "media/keyboard-vaast-tgb3.png"];
-  var vaast_bg_filename         = ["background/env_eco/2.jpg", "background/env_eco/4.jpg", "background/env_eco/6.jpg", 
-  									"background/fv_eco/2.jpg", "background/fv_eco/4.jpg", "background/fv_eco/6.jpg"];
+  const loading_gif               = ["media/loading.gif"]
+  const vaast_instructions_images = ["media/vaast-background_env_eco.jpg", "media/vaast-background_fv_eco.jpg", "media/keyboard-vaast-tgb3.png"];
+  const vaast_bg_filename         = ["background/env_eco/2.jpg", "background/env_eco/4.jpg", "background/env_eco/6.jpg", 
+    									"background/fv_eco/2.jpg", "background/fv_eco/4.jpg", "background/fv_eco/6.jpg"];
 
   jsPsych.pluginAPI.preloadImages(loading_gif);
   jsPsych.pluginAPI.preloadImages(vaast_instructions_images);
   jsPsych.pluginAPI.preloadImages(vaast_bg_filename);
-  
+    
   // Timeline initialization ---------------------------------------------------------------
 
-  if(is_compatible) {
-    jsPsych.run(timeline);
-  }
+  jsPsych.run(timeline);
+}
