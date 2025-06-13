@@ -820,12 +820,7 @@ if(!is_compatible) {
         return true; // asks again
       }
       return false;
-    },
-    // on_finish: function(data) {
-    //   jsPsych.data.addProperties({
-    //     extra_information_2: data.response,
-    //   });
-    // }
+    }
   }
 
   const extra_information_3 = {
