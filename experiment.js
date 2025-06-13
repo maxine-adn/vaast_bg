@@ -46,7 +46,7 @@ if(!is_compatible) {
   timeline_exclusion.push(exclusion);
   const jsPsych = initJsPsych(); // no parameter
   jsPsych.run(timeline_exclusion);
-
+  
 } else {
   var jsPsych = initJsPsych({
     on_interaction_data_update: function() {
@@ -91,19 +91,19 @@ if(!is_compatible) {
     first_connection = false;
     } else {
       if(!first_connection) {
-      dialog = bootbox.dialog({
-        title: 'Connection lost',
+        dialog = bootbox.dialog({
+          title: 'Connection lost',
         message: '<p><i class="fa fa-spin fa-spinner"></i> Please wait while we try to reconnect.</p>',
         closeButton: false
         });
       }
     }
   });
-
+  
   // Global variables:
   const approach_key  = "T";
   const avoidance_key = "B";
-
+  
   // Cursor helper functions -------------------------------------------------------------
   const hiding_cursor = {
     type: jsPsychCallFunction,
@@ -111,14 +111,14 @@ if(!is_compatible) {
       document.body.style.cursor= "none";
     }
   }
-
+  
   const showing_cursor = {
     type: jsPsychCallFunction,
     func: function() {
       document.body.style.cursor= "auto";
     }
   }
-
+  
   // VAAST --------------------------------------------------------------------------------
   // Variables used to define the experimental conditions
   const vaast_cond_block_1 = jsPsych.randomization.sampleWithoutReplacement(["app_pos", "app_neg"], 1)[0];
@@ -147,7 +147,7 @@ if(!is_compatible) {
   const move_neg_1 = cond1.move_neg;
   const stim_to_approach_1 = cond1.stim_to_approach;
   const stim_to_avoid_1 = cond1.stim_to_avoid;
-
+  
   const move_pos_2 = cond2.move_pos;
   const move_neg_2 = cond2.move_neg;
   const stim_to_approach_2 = cond2.stim_to_approach;
@@ -161,30 +161,30 @@ if(!is_compatible) {
     "background/6.jpg"
   ];
   */
-  const background_env_eco = [
-    "background/env_eco/2.jpg",
-    "background/env_eco/4.jpg",
-    "background/env_eco/6.jpg"
+ const background_env_eco = [
+   "background/env_eco/2.jpg",
+   "background/env_eco/4.jpg",
+   "background/env_eco/6.jpg"
   ];
-
+  
   const background_fv_eco = [
     "background/fv_eco/2.jpg",
     "background/fv_eco/4.jpg",
     "background/fv_eco/6.jpg"
   ];
-
-  // prolific variables
+  
   let background = jsPsych.data.getURLVariable('background');
   if(background == null) {background = jsPsych.randomization.sampleWithoutReplacement([background_env_eco, background_fv_eco], 1)[0];}
-
+  
   //let background = jsPsych.randomization.sampleWithoutReplacement([background_env_eco, background_fv_eco], 1)[0];
-
+  
   bg_preview = background == background_env_eco ? "media/vaast-background_env_eco.jpg" : "media/vaast-background_fv_eco.jpg";
-
+  
+  // prolific variables
   let prolific_id = jsPsych.data.getURLVariable('PROLIFIC_PID');
   if(prolific_id == null) 
     prolific_id = jsPsych.randomization.randomID();
-
+  
   // VAAST stimuli ------------------------------------------------------------------------
   const vaast_stim_training_block_1_words = [
     {stimulus: 'courage',     category: "pos", movement: move_pos_1},
@@ -194,7 +194,7 @@ if(!is_compatible) {
     {stimulus: 'amputation',  category: "neg", movement: move_neg_1},
     {stimulus: 'homicide',    category: "neg", movement: move_neg_1}, */
   ];
-
+  
   const vaast_stim_block_1_words = [
     {stimulus: 'accomplishment',  category: "pos",  movement: move_pos_1},
   /* {stimulus: 'comedy',          category: "pos",  movement: move_pos_1},
@@ -320,11 +320,32 @@ if(!is_compatible) {
 
     return(position)
   }
+  
+  // Preloading
+  // In principle, it should have ended when participants starts VAAST procedure (which)
+  // contains most of the images that have to be pre-loaded.
+ 
+  const all_backgrounds = [
+  "media/loading.gif", 
+  "media/vaast-background_env_eco.jpg", 
+  "media/vaast-background_fv_eco.jpg", 
+  "media/keyboard-vaast-tgb3.png",
+  "background/env_eco/2.jpg",
+  "background/env_eco/4.jpg",
+  "background/env_eco/6.jpg",
+  "background/fv_eco/2.jpg",
+  "background/fv_eco/4.jpg",
+  "background/fv_eco/6.jpg"
+  ];
+  
+  const preload = {
+    type: jsPsychPreload,
+    images: all_backgrounds};
 
   // Saving blocks ------------------------------------------------------------------------
   // Every function here sends the data to keen.io. Because data sent is different according
   // to trial type, there are different function definitions.
-
+  
   // Init ---------------------------------------------------------------------------------
   const saving_id = function() {
     database
@@ -897,7 +918,9 @@ if(!is_compatible) {
   
   const timeline = [];
 
-  /*timeline.push(welcome,
+  timeline.push(preload);
+
+  timeline.push(welcome,
                 consent,
                 welcome_2,
                 if_not_enough_time);
@@ -935,7 +958,7 @@ if(!is_compatible) {
 
   // vaast - end
   timeline.push(fullscreen_trial_exit,
-                showing_cursor); */
+                showing_cursor); 
 
   // demographic questions
   timeline.push(extra_information,
@@ -952,19 +975,6 @@ if(!is_compatible) {
                 ending_2);
 
   // Launch experiment --------------------------------------------------------------------
-  // Preloading. For some reason, it appears auto-preloading fails, so using it manually.
-  // In principle, it should have ended when participants starts VAAST procedure (which)
-  // contains most of the image that have to be pre-loaded.
-  const loading_gif               = ["media/loading.gif"]
-  const vaast_instructions_images = ["media/vaast-background_env_eco.jpg", "media/vaast-background_fv_eco.jpg", "media/keyboard-vaast-tgb3.png"];
-  const vaast_bg_filename         = ["background/env_eco/2.jpg", "background/env_eco/4.jpg", "background/env_eco/6.jpg", 
-    									"background/fv_eco/2.jpg", "background/fv_eco/4.jpg", "background/fv_eco/6.jpg"];
-
-  jsPsych.pluginAPI.preloadImages(loading_gif);
-  jsPsych.pluginAPI.preloadImages(vaast_instructions_images);
-  jsPsych.pluginAPI.preloadImages(vaast_bg_filename);
-    
-  // Timeline initialization ---------------------------------------------------------------
 
   jsPsych.run(timeline);
 }
