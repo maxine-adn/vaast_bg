@@ -66,7 +66,7 @@ var jsPsychVaastFixation = (function(jspsych) {
       // Affichage du stimulus
       var html_str = "";
       
-      html_str += "<div style='position:absolute;right:0;top:0;width:100%; height:100%;background:url("+trial.background_images[trial.position]+") center no-repeat;z-index:-1'></div>";
+      html_str += "<div style='position:absolute;right:0;top:0;width:100%; height:100%;background:url("+trial.background_images[trial.position]+") center no-repeat;z-index:-1; background-color:#000000'></div>";
       html_str += "<div style='height: 100vh; display: flex; justify-content: center; align-items: center;z-index:1; color: #ffffff; font-size: "+trial.font_size+"px' id='jspsych-iat-stim'>"+trial.fixation+"</div>";
       
       display_element.innerHTML = html_str;

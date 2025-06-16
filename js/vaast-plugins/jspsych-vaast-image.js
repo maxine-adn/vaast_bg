@@ -136,7 +136,7 @@ var jsPsychVaastImage = (function(jspsych) {
     trial(display_element, trial) {
       let html_str = "";
 
-      html_str += "<div style='position: absolute; right: 0; top: 0; width: 100%; height: 100%; background: url(" + trial.background_images[trial.position] + ") center no-repeat'></div>";
+      html_str += "<div style='position: absolute; right: 0; top: 0; width: 100%; height: 100%; background: url(" + trial.background_images[trial.position] + ") center no-repeat; background-color:#000000'></div>";
       html_str += "<div style='position: absolute; right: 50%; top: 50; width: " + trial.font_sizes[trial.position] + "px; height: " + trial.font_sizes[trial.position] + "px; margin-top: -" + 
         (trial.font_sizes[trial.position]/2) + "px; margin-right: -" + (trial.font_sizes[trial.position]/2) + "px'><img height='" + trial.font_sizes[trial.position] + "' width='" + 
         trial.font_sizes[trial.position] + "' src='" + trial.stimulus + "' id='jspsych-vaast-stim'></img></div>";
