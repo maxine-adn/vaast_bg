@@ -856,7 +856,7 @@ if(!is_compatible) {
   const extra_information_4 = {
     type: jsPsychSurveyMultiChoice,
     questions: [{prompt: "How well do you speak English?",
-                 options: ["&nbspFluently", "&nbspVery well", "&nbspWell", "&nbspAverage", "&nbspBad", "&nbspVery bad"],
+                 options: ["&nbspFluently", "&nbspVery well", "&nbspWell", "&nbspAverage", "&nbspBadly", "&nbspVery badly"],
                  required: true, horizontal: false,
                  name: "fluency"}],
     button_label: "Submit"
