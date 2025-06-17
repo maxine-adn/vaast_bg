@@ -136,7 +136,7 @@ var jsPsychVaastImage = (function(jspsych) {
     trial(display_element, trial) {
       let html_str = "";
 
-      html_str += "<div style='position: absolute; right: 0; top: 0; width: 100%; height: 100%; background: url(" + trial.background_images[trial.position] + ") center no-repeat; background-color:#000000'></div>";
+      html_str += "<div style='position: absolute; right: 0; top: 0; width: 100%; height: 100%; background: url(" + trial.background_images[trial.position] + ") center no-repeat; background-color: #000000'></div>";
       html_str += "<div style='position: absolute; right: 50%; top: 50; width: " + trial.font_sizes[trial.position] + "px; height: " + trial.font_sizes[trial.position] + "px; margin-top: -" + 
         (trial.font_sizes[trial.position]/2) + "px; margin-right: -" + (trial.font_sizes[trial.position]/2) + "px'><img height='" + trial.font_sizes[trial.position] + "' width='" + 
         trial.font_sizes[trial.position] + "' src='" + trial.stimulus + "' id='jspsych-vaast-stim'></img></div>";
@@ -153,7 +153,7 @@ var jsPsychVaastImage = (function(jspsych) {
       display_element.innerHTML = html_str;
 
       // store response
-      var response = {
+      let response = {
         rt: null,
         key: null,
         correct: false
@@ -182,8 +182,8 @@ var jsPsychVaastImage = (function(jspsych) {
       };
 
       // function to handle responses by the subject
-      var after_response = function(info) {
-        var wImg = document.getElementById("wrongImgContainer");
+      const after_response = function(info) {
+        let wImg = document.getElementById("wrongImgContainer");
         // after a valid response, the stimulus will have the CSS class 'responded'
         // which can be used to provide visual feedback that a response was recorded
         display_element.querySelector('#jspsych-vaast-stim').className += ' responded';
@@ -213,16 +213,17 @@ var jsPsychVaastImage = (function(jspsych) {
             if(trial.response_ends_trial && trial.display_feedback == true && trial.feedback_duration == null) {
               wImg.style.visibility = "visible";
               if(trial.force_correct_key_press) {
-                var keyListener = jsPsych.pluginAPI.getKeyboardResponse({
+                let keyListener = jsPsych.pluginAPI.getKeyboardResponse({
                   callback_function: end_trial,
                   valid_responses: [trial.avoidance_key]
                 });
               } else {
-              var keyListener = jsPsych.pluginAPI.getKeyboardResponse({
-                callback_function: end_trial,
-                valid_responses: trial.key_to_move_forward
-              });}
-             } else if(trial.response_ends_trial && trial.display_feedback != true) {
+                let keyListener = jsPsych.pluginAPI.getKeyboardResponse({
+                  callback_function: end_trial,
+                  valid_responses: trial.key_to_move_forward
+                });
+              }
+            } else if(trial.response_ends_trial && trial.display_feedback != true) {
               end_trial();
             } else if(!trial.response_ends_trial && trial.display_feedback != true) {
 
@@ -248,15 +249,16 @@ var jsPsychVaastImage = (function(jspsych) {
             if(trial.response_ends_trial && trial.display_feedback == true && trial.feedback_duration == null) {
               wImg.style.visibility = "visible";
               if(trial.force_correct_key_press) {
-                var keyListener = jsPsych.pluginAPI.getKeyboardResponse({
+                let keyListener = jsPsych.pluginAPI.getKeyboardResponse({
                   callback_function: end_trial,
                   valid_responses: [trial.approach_key]
                 });
               } else {
-              var keyListener = jsPsych.pluginAPI.getKeyboardResponse({
-                callback_function: end_trial,
-                valid_responses: trial.key_to_move_forward
-              });}
+                let keyListener = jsPsych.pluginAPI.getKeyboardResponse({
+                  callback_function: end_trial,
+                  valid_responses: trial.key_to_move_forward
+                });
+              }
             } else if(trial.response_ends_trial && trial.display_feedback != true) {
               end_trial();
             } else if(!trial.response_ends_trial && trial.display_feedback != true) {
