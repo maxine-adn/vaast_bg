@@ -59,10 +59,6 @@ if(!is_compatible) {
   });
 
   // Firebase initialization ---------------------------------------------------------------
-  const firebase_config = {
-    apiKey: "AIzaSyAPTEPrT8V9T1-GouWXnW6jknK3brmagJs",
-    databaseURL: "https://postdocgent.firebaseio.com/"
-  };
   firebase.initializeApp(firebase_config);
   let database = firebase.database();
   const session_id = jsPsych.randomization.randomID();
@@ -822,16 +818,16 @@ if(!is_compatible) {
   const extra_information_2 = {
     timeline: [{
       type: jsPsychSurveyText,
-      questions: [{prompt: "What is your age?", 
-                   required: true, 
+      questions: [{prompt: "How old are you?",
+                   required: true,
                    name: "age"}],
       button_label: "Submit",
     }],
-    loop_function: function(data) {
+    loop_function: function() {
       let trial_data = jsPsych.data.getLastTrialData().values()[0];
       let age = "";
 
-      if (trial_data.response && trial_data.response.age !== undefined) {
+      if (trial_data.response && trial_data.response.age !== undefined && trial_data.response.age !== null) {
         age = trial_data.response.age.trim();
       }
 
