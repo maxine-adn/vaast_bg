@@ -78,8 +78,8 @@ connectedRef.on("value", function(snap) {
     if(!first_connection) {
       dialog = bootbox.dialog({
         title: 'Connection lost',
-      message: '<p><i class="fa fa-spin fa-spinner"></i> Please wait while we try to reconnect.</p>',
-      closeButton: false
+        message: '<p class= "noConnection"><img class="spinner" src="/media/loading.gif" alt="loading gif"/> Please wait while we try to reconnect.</p>',
+        closeButton: false
       });
     }
   }

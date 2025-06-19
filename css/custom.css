@@ -19,6 +19,7 @@
 .key {
 	font-weight: bold;
 }
+
 .iat-category {
 	font-weight: bold;
 }
@@ -60,4 +61,17 @@
 .luupite-niffite {
 	color: #009000;
 	font-weight: bold;
+}
+
+/*no connection spinner*/
+
+.spinner {
+	height: 15%;
+	width: 15%;
+	margin-right: 15px;
+	margin-left: 20px;
+}
+
+.noConnection {
+	margin-bottom: 10px;
 }
