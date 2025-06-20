@@ -43,6 +43,7 @@ var jsPsych = initJsPsych({
   },
   on_finish: function() {
     saving_browser_events(completion = true);
+    jatos.endStudy(jsPsych.data.get().json());
     window.location.href = "your-redirection-url";
   }
 });
@@ -961,4 +962,6 @@ timeline.push(ending,
               ending_2);
 
 // Launch experiment --------------------------------------------------------------------
-jsPsych.run(timeline);
+jatos.onLoad(() => {
+  jsPsych.run(timeline);
+});
