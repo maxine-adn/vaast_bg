@@ -512,7 +512,7 @@ const instructions = {
   type: jsPsychHtmlKeyboardResponse,
   stimulus: "<p class='instructions'>You are now about to start the study. "+
     "<br><br>"+
-    "In this study, you will engage in a categorization task divided into two sections. " +
+    "In this study, you will engage in a categorization task divided into two sections. </p>" +
     "<p class='instructions'>Note that your complete attention is critical for this task " +
     "(to ensure this, we may have added attentional check during the experiment)." +
     "<br>Note also that we monitor the time spent during the experiment and that " +
@@ -529,9 +529,9 @@ const vaast_instructions_1 = {
     "<h1 class ='custom-title'>Video Game Task</h1>" +
     "<p class='instructions'>In this task, like in a video game, you will see an environment " +
     "(presented below) in which you will be able to move forward or backward.</p>" +
-    "<p class='instructions'><center>" +
-      "<img src = '" + bg_preview + "'/>" +
-    "</center></p>" +
+    "<p class='instructions'></p>" +
+      "<img src = '" + bg_preview + "'>" +
+    "<br><br>" +
     "<p class = 'continue-instructions'>Press <strong>space</strong> to continue.</p>",
   choices: [' ']
 };
@@ -552,11 +552,10 @@ const vaast_instructions_2 = {
     "<h1 class ='custom-title'>Video Game Task</h1>" +
     "<p class='instructions'>Words will appear in this environment and your task " +
     "will be to move forward or backward as a function of the type of word (more specific instructions following).</p>" +
-    "<p class='instructions'> To move forward or backward, you will use the following keys " +
-    "of your keyboard:</p>" +
-    "<p class='instructions'><center>" +
-    "<img src = 'media/keyboard-vaast-tgb3.png'/>" +
-    "</center></p>" +
+    "<p class='instructions'> To move forward or backward, you will use the following keys of your keyboard:</p>" +
+    "<p class='instructions'></p>" +
+      "<img src = 'media/keyboard-vaast-tgb3.png'/>" +
+    "<br><br>" +
     "<p class = 'continue-instructions'>Press <strong>space</strong> to continue.</p>",
   choices: [' ']
 };
@@ -565,10 +564,9 @@ const vaast_instructions_3 = {
   type: jsPsychHtmlKeyboardResponse,
   stimulus:
     "<h1 class ='custom-title'>Video Game Task</h1>" +
-    "<p class='instructions'>At the beginning of each trial, you will see the 'O' symbol. This symbol " +
-    "indicates that you have to press the <b>START key</b> (namely the <b>G key</b>) to start the trial.</p>" +
-    "<p class='instructions'>Then, you will see a fixation cross (+) at the center of the screen, followed " +
-    "by a word.</p>" +
+    "<p class='instructions'>At the beginning of each trial, you will see the 'O' symbol. " +
+    "This symbol indicates that you have to press the <b>START key</b> (namely the <b>G key</b>) to start the trial.</p>" +
+    "<p class='instructions'>Then, you will see a fixation cross (+) at the center of the screen, followed by a word.</p>" +
     "<p class='instructions'>Your task is to move forward or backward by pressing the <b>MOVE FORWARD</b> " +
     "(the <b>T key</b>) or the <b>MOVE BACKWARD</b> (the <b>B key</b>) key <strong>as fast as possible</strong>.</p>" +
     "<p class='instructions'>For all of these actions, please only use the index of your dominant hand.</p>" +
@@ -587,8 +585,8 @@ const vaast_instructions_training_block_1 = {
       "<li><strong>AVOID " + stim_to_avoid_1 + " by pressing the MOVE BACKWARD key <br>(i.e., the " + avoidance_key + " key)</strong></li>" +
      "</ul>" +
     "<p class='instructions'>You will start with a training phase.</p>" +
-    "<p class='instructions'><u>WARNING:</u> we will report your errors ONLY during the training phase, so " +
-    "it is important that you read carefully and memorize the instructions above.</p>" +
+    "<p class='instructions'><u>WARNING:</u> we will report your errors ONLY during the training phase, " +
+    "so it is important that you read carefully and memorize the instructions above.</p>" +
     "<p class='continue-instructions'>Press <strong>space</strong> to continue.</p>",
   choices: [' ']
 };
@@ -619,8 +617,8 @@ const vaast_instructions_training_block_2 = {
         "<li><strong>AVOID " + stim_to_avoid_2 + " by pressing the MOVE BACKWARD key <br>(i.e., the " + avoidance_key + " key)</strong></li>" +
       "</ul>" +
     "<p class='instructions'>You will start with a training phase.</p>" +
-    "<p class='instructions'><u>WARNING:</u> we will report your errors ONLY during the training phase, so " +
-    "it is important that you read carefully and memorize the instructions above.</p>" +
+    "<p class='instructions'><u>WARNING:</u> we will report your errors ONLY during the training phase, " +
+    "so it is important that you read carefully and memorize the instructions above.</p>" +
     "<p class='continue-instructions'>Press <strong>space</strong> to continue.</p>",
   choices: [' ']
 };
@@ -892,8 +890,7 @@ const ending_2 = {
   type: jsPsychHtmlKeyboardResponse,
   trial_duration: 2000,
   stimulus:
-    "<p class='instructions'>You will now be redirected to Prolific Academic's website " +
-    "within seconds.<p>" +
+    "<p class='instructions'>You will now be redirected to Prolific Academic's website within seconds.<p>" +
     "<p class='instructions'>If you are not redirected, please click <a href='https://app.prolific.ac/submissions/complete?cc=MEMHX5XQ'>here</a>.<p>",
   choices: "NO_KEYS"
 };
