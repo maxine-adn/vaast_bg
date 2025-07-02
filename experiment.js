@@ -370,7 +370,7 @@ const saving_extra = function() {
       timestamp: firebase.database.ServerValue.TIMESTAMP,
       vaast_cond_block_1: vaast_cond_block_1,
       vaast_cond_block_2: vaast_cond_block_2,
-      extra_data: jsPsych.data.get().last(7).json(),
+      extra_data: jsPsych.data.get().last(6).json(),
     })
 }
 
